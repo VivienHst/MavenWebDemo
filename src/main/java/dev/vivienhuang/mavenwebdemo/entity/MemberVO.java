@@ -12,20 +12,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name="Member")
 public class MemberVO {
-	/*
-	 Uid int not null IDENTITY(1,1),
-    Account varchar(16) not null,
-    Password varchar(20) not null,
-    FirstName nvarchar (20) not null,
-    LastName nvarchar (20) not null,
-    Email nvarchar(40),
-    PhoneCode varchar(5),
-    PhoneNumber varchar(16),
-    State varchar(20) not null,
-    Type varchar(20) not null,
-    CreateDate datetime not null,
-    UpdateDate datetime,
-    */
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="Uid")
@@ -178,5 +165,15 @@ public class MemberVO {
 	public void setUpdateDate(Timestamp updateDate) {
 		this.updateDate = updateDate;
 	}
+
+	@Override
+	public String toString() {
+		return "MemberVO [uid=" + uid + ", account=" + account + ", password=" + password + ", firstName=" + firstName
+				+ ", lastName=" + lastName + ", email=" + email + ", phoneCode=" + phoneCode + ", phoneNumber="
+				+ phoneNumber + ", state=" + state + ", type=" + type + ", createDate=" + createDate + ", updateDate="
+				+ updateDate + "]";
+	}
+	
+	
 	
 }
