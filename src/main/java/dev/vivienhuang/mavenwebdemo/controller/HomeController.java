@@ -1,7 +1,10 @@
 package dev.vivienhuang.mavenwebdemo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import dev.vivienhuang.mavenwebdemo.dao.chat.IChatKeyWordDAO;
@@ -25,5 +28,15 @@ public class HomeController {
 //		chatKeyWordService.createChatKeyWord(new ChatKeyWordVO("HI", "你好", 
 //				new java.sql.Timestamp(System.currentTimeMillis())));
 		return "home";
+	}
+	
+	@GetMapping("/keyword")
+	public String getKeywordPage(Model model) {
+		System.out.println("\n chatKeyWordService.getChatKeyWords()" 
+				+ chatKeyWordService.getChatKeyWords().get(0).toString());
+		
+		List<ChatKeyWordVO> chatKeyWordVOs = chatKeyWordService.getChatKeyWords();
+		model.addAttribute("chatKeywords", chatKeyWordVOs);
+		return "keyword_list";
 	}
 }
