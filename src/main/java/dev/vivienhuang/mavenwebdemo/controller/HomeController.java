@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import dev.vivienhuang.mavenwebdemo.dao.chat.IChatKeyWordDAO;
 import dev.vivienhuang.mavenwebdemo.entity.ChatKeyWordVO;
@@ -34,9 +37,23 @@ public class HomeController {
 	public String getKeywordPage(Model model) {
 		System.out.println("\n chatKeyWordService.getChatKeyWords()" 
 				+ chatKeyWordService.getChatKeyWords().get(0).toString());
-		
 		List<ChatKeyWordVO> chatKeyWordVOs = chatKeyWordService.getChatKeyWords();
 		model.addAttribute("chatKeywords", chatKeyWordVOs);
+		model.addAttribute("keyword", new ChatKeyWordVO());
+
 		return "keyword_list";
+	}
+	
+	@PostMapping("/saveChatKeyword")
+	public String saveChatKeywordAction(@ModelAttribute("keyword")ChatKeyWordVO model) {
+		chatKeyWordService.createChatKeyWord(new ChatKeyWordVO(model.getChatKey(), model.getChatValue(), 
+		new java.sql.Timestamp(System.currentTimeMillis())));
+		return "redirect:/keyword";
+	}
+	
+	@GetMapping("/keywordDelete")
+	public String keywordDeleteAction(@RequestParam("cId")int cId) {
+		chatKeyWordService.deleteChatKeyWord(cId);
+		return "redirect:/keyword";
 	}
 }
