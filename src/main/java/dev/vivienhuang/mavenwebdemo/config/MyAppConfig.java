@@ -28,8 +28,12 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 @EnableWebMvc
 @EnableTransactionManagement
 @ComponentScan(basePackages="dev.vivienhuang.mavenwebdemo")
-@PropertySource("classpath:persistence_sqlserver.properties")
+@PropertySource(value = "classpath:persistence_sqlserver.properties", encoding = "UTF-8")
 public class MyAppConfig implements WebMvcConfigurer {
+	
+	
+	
+	
 	//define a bean for ViewResolver
 	@Bean
 	public ViewResolver viewResolver() {
@@ -38,6 +42,16 @@ public class MyAppConfig implements WebMvcConfigurer {
 		viewResolver.setSuffix(".jsp");
 		return viewResolver;
 	}
+	
+//	@Override
+//    public void configureViewResolvers(ViewResolverRegistry registry) {
+//        ThymeleafViewResolver resolver = new ThymeleafViewResolver();
+//        resolver.setTemplateEngine(templateEngine());
+//        resolver.setCharacterEncoding("UTF-8"); // <- this was added
+//        resolver.setForceContentType(true); // <- this was added
+//        resolver.setContentType("text/html; charset=UTF-8"); // <- this was added
+//        registry.viewResolver(resolver);
+//    }
 	
 	// add data source
 	

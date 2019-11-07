@@ -30,8 +30,9 @@ public class ChatKeywordController {
 	
 	@PostMapping("/saveChatKeyword")
 	public String saveChatKeywordAction(@ModelAttribute("keyword")ChatKeyWordVO model) {
-		chatKeyWordService.createChatKeyWord(new ChatKeyWordVO(model.getChatKey(), model.getChatValue(), 
-		new java.sql.Timestamp(System.currentTimeMillis())));
+		chatKeyWordService.createChatKeyWord(new ChatKeyWordVO(model.getChatKey(), 
+				model.getChatValue(), 
+				new java.sql.Timestamp(System.currentTimeMillis())));
 		return "redirect:/keyword";
 	}
 	
@@ -50,6 +51,7 @@ public class ChatKeywordController {
 	
 	@PostMapping("/keywordUpdate")
 	public String keywordUpdateAction(@ModelAttribute("keyword")ChatKeyWordVO chatKeyWordVO) {
+		System.out.println("chatKeyWordVO.getChatValue() : " + chatKeyWordVO.getChatValue());
 		chatKeyWordService.updateChatKeyWord(chatKeyWordVO);
 		return "redirect:/keyword";
 	}
