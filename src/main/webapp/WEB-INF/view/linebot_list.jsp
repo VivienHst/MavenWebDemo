@@ -28,9 +28,9 @@
 		</span>
 	
 		<ul class="navbar-nav">
-			<li><a href="${pageContext.request.contextPath}/home">Home</a></li>
+			<li><a href="${pageContext.request.contextPath}/hoem">Home</a></li>
 			<li><a href="${pageContext.request.contextPath}/keyword">Keyword</a></li>
-			<li><a href="${pageContext.request.contextPath}/linebot">Bot</a></li>					
+			<li><a href="${pageContext.request.contextPath}/linebot">Bot</a></li>			
 			<li><a href="#">Member</a></li>
 			<li><a href="#">Services</a></li>
 
@@ -41,22 +41,26 @@
 		<a href="${pageContext.request.contextPath}/home">Home</a>
 		<a href="${pageContext.request.contextPath}/keyword">Keyword</a>
 		<a href="${pageContext.request.contextPath}/linebot">Bot</a>
+		
 		<a href="#">Member</a>
 		<a href="#">Services</a>
 	</div>
 
 	<div id="main">
-		<form:form action="saveChatKeyword" modelAttribute ="keyword"  method="post">
+		<form:form action="saveLineBot" modelAttribute ="linebot"  method="post">
 		<table border="1" >				
 			<tr>
-				<td>Key : </td>
-				<td><form:input path="chatKey"/></td>
+				<td>Token : </td>
+				<td><form:input path="token" /></td>
 				
-				<td>Value : </td>
-				<td><form:input path="chatValue" /></td>
+				<td>Secret : </td>
+				<td><form:input path="secret" /></td>
 				
-				<td>Key</td>
-			
+				<td>DisplayName : </td>
+				<td><form:input path="displayName"/></td>
+				
+				<td>Type : </td>
+				<td><form:input path="type"/></td>			
 				<td><input type="submit" value="新增"></td>				
 			</tr>
 	</table>
@@ -68,28 +72,34 @@
 	
 	<table border="1" >		
 		<tr>
-			<th>CId</th>
-			<th>ChatKey</th>
-			<th>ChatValue</th>
+			<th>BotId</th>
+			<th>Token</th>
+			<th>Secret</th>
+			<th>DisplayName</th>
+			<th>Type</th>
 			<th>CreateDate</th>
+			<th>UpdateDate</th>
 			<th>Update</th>
 			<th>Delete</th>
 		</tr>
 		
-		<c:forEach var="chatKeyword" items="${chatKeywords}">
-			<c:url var="dateilLink" value="/keywordDetail">
-				<c:param name="cId" value="${chatKeyword.cId}" />
+		<c:forEach var="lineBotItem" items="${lineBots}">
+			<c:url var="dateilLink" value="/linebotDetail">
+				<c:param name="botId" value="${lineBotItem.botId}" />
 			</c:url>
 			
-			<c:url var="deleteLink" value="/keywordDelete">
-				<c:param name="cId" value="${chatKeyword.cId}" />
-			</c:url>
+			<c:url var="deleteLink" value="/linebotDelete">
+				<c:param name="botId" value="${lineBotItem.botId}" />
+			</c:url>  
 
 			<tr>
-				<td>${chatKeyword.cId}</td>
-				<td>${chatKeyword.chatKey}</td>
-				<td>${chatKeyword.chatValue}</td>
-				<td>${chatKeyword.createDate}</td>
+				<td>${lineBotItem.botId}</td>
+				<td>${lineBotItem.token}</td>
+				<td>${lineBotItem.secret}</td>			
+				<td>${lineBotItem.displayName}</td>
+				<td>${lineBotItem.type}</td>
+				<td>${lineBotItem.createDate}</td>
+				<td>${lineBotItem.updateDate}</td>
 				<td><a href="${dateilLink}">修改</a></td>				
 				<td><a href="${deleteLink}">刪除</a></td>	
 					

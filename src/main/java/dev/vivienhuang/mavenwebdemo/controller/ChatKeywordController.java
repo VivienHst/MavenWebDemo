@@ -55,4 +55,5 @@ public class ChatKeywordController {
 		chatKeyWordService.updateChatKeyWord(chatKeyWordVO);
 		return "redirect:/keyword";
 	}
+
 }
