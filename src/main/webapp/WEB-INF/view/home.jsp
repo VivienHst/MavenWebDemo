@@ -28,7 +28,8 @@
 		<ul class="navbar-nav">
 			<li><a href="${pageContext.request.contextPath}/home">Home</a></li>
 			<li><a href="${pageContext.request.contextPath}/keyword">Keyword</a></li>
-			<li><a href="${pageContext.request.contextPath}/linebot">Bot</a></li>					
+			<li><a href="${pageContext.request.contextPath}/linebot">Bot</a></li>	
+			<li><a href="${pageContext.request.contextPath}/skill">Skill</a></li>												
 			<li><a href="#">Member</a></li>
 			<li><a href="#">Services</a></li>
 
@@ -39,6 +40,7 @@
 		<a href="${pageContext.request.contextPath}/home">Home</a>
 		<a href="${pageContext.request.contextPath}/keyword">Keyword</a>
 		<a href="${pageContext.request.contextPath}/linebot">Bot</a>
+		<a href="${pageContext.request.contextPath}/skill">Skill</a>
 		<a href="#">Member</a>
 		<a href="#">Services</a>
 	</div>

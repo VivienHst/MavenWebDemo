@@ -9,7 +9,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<title>Home</title>
+<title>Skill</title>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/static/css/style.css">
 
 
@@ -30,8 +30,8 @@
 		<ul class="navbar-nav">
 			<li><a href="${pageContext.request.contextPath}/home">Home</a></li>
 			<li><a href="${pageContext.request.contextPath}/keyword">Keyword</a></li>
-			<li><a href="${pageContext.request.contextPath}/linebot">Bot</a></li>	
-			<li><a href="${pageContext.request.contextPath}/skill">Skill</a></li>												
+			<li><a href="${pageContext.request.contextPath}/linebot">Bot</a></li>
+			<li><a href="${pageContext.request.contextPath}/skill">Skill</a></li>					
 			<li><a href="#">Member</a></li>
 			<li><a href="#">Services</a></li>
 
@@ -48,17 +48,15 @@
 	</div>
 
 	<div id="main">
-		<form:form action="saveChatKeyword" modelAttribute ="keyword"  method="post">
+		<form:form action="saveSkill" modelAttribute ="newSkill"  method="post">
 		<table border="1" >				
 			<tr>
-				<td>Key : </td>
-				<td><form:input path="chatKey"/></td>
+				<td>Skill Name : </td>
+				<td><form:input path="skillName"/></td>
 				
-				<td>Value : </td>
-				<td><form:input path="chatValue" /></td>
+				<td>SKill Desc : </td>
+				<td><form:input path="skillDesc" /></td>
 				
-				<td>Key</td>
-			
 				<td><input type="submit" value="新增"></td>				
 			</tr>
 	</table>
@@ -70,28 +68,26 @@
 	
 	<table border="1" >		
 		<tr>
-			<th>CId</th>
-			<th>ChatKey</th>
-			<th>ChatValue</th>
-			<th>CreateDate</th>
+			<th>SkillId</th>
+			<th>SKillName</th>
+			<th>SkillDesc</th>
 			<th>Update</th>
 			<th>Delete</th>
 		</tr>
 		
-		<c:forEach var="chatKeyword" items="${chatKeywords}">
-			<c:url var="dateilLink" value="/keywordDetail">
-				<c:param name="cId" value="${chatKeyword.cId}" />
+		<c:forEach var="skill" items="${skills}">
+			<c:url var="dateilLink" value="/skillDetail">
+				<c:param name="skillId" value="${skill.skillId}" />
 			</c:url>
 			
-			<c:url var="deleteLink" value="/keywordDelete">
-				<c:param name="cId" value="${chatKeyword.cId}" />
+			<c:url var="deleteLink" value="/skillDelete">
+				<c:param name="skillId" value="${skill.skillId}" />
 			</c:url>
 
 			<tr>
-				<td>${chatKeyword.cId}</td>
-				<td>${chatKeyword.chatKey}</td>
-				<td>${chatKeyword.chatValue}</td>
-				<td>${chatKeyword.createDate}</td>
+				<td>${skill.skillId}</td>
+				<td>${skill.skillName}</td>
+				<td>${skill.skillDesc}</td>
 				<td><a href="${dateilLink}">修改</a></td>				
 				<td><a href="${deleteLink}">刪除</a></td>	
 					
