@@ -1,12 +1,13 @@
 package dev.vivienhuang.mavenwebdemo.dao.member;
 
-import java.lang.reflect.Member;
 import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Repository;
 
 import dev.vivienhuang.mavenwebdemo.entity.MemberVO;
@@ -21,6 +22,9 @@ public class MemberDAO implements IMemberDAO {
 	public void createMember(MemberVO memberVO) {
 		Session session = sessionFactory.getCurrentSession();
 		session.save(memberVO);
+		new User(memberVO.getAccount(), memberVO.getPassword(), 
+				AuthorityUtils.createAuthorityList("ROLE_EMPLOYEE"));
+//		AuthorityUtils.createAuthorityList("ROLE_EMPLOYEE");
 	}
 
 	@Override
