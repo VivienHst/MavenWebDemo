@@ -15,29 +15,47 @@
 		<jsp:include page="navbar_and_side_menu.jsp"></jsp:include><!-- 第二種 -->
 	
 		<div id="main">
+			<h1>member_update.jsp</h1>
 	
-			<h1>keyword_update.jsp</h1>
-			
 			<div id="container">
-				<form:form action="keywordUpdate" modelAttribute="keyword" method="post">
+				<form:form action="memberUpdate" modelAttribute="member" method="post">
 					<table>
 						<tbody>
 							<tr>
-								<td>Key : </td>
-								<td><form:input path="chatKey" value="${keyword.chatKey}"/></td>
+								<td>Account : </td>
+								<td><form:label  path="account" value="${member.account}"/>${member.account}</td>
 							</tr>
+							
 							<tr>
-								<td>Value : </td>
-								<td><form:input path="chatValue" value="${keyword.chatValue}"/></td>
+								<td>FirstName : </td>
+								<td><form:label  path="account" value="${member.firstName}"/>${member.firstName}</td>
 							</tr>
+							
+							<tr>
+								<td>FirstName : </td>
+								<td><form:label  path="account" value="${member.lastName}"/>${member.lastName}</td>
+							</tr>
+							<c:forEach var="memberPermission" items="${memberPermissions}">
+							
+					
+								<tr>
+									<td>${memberPermission.memberPermissionPK.permission}</td>
+								</tr>
+							</c:forEach>
 						</tbody>
-					</table>
-					<form:input type="hidden" path="cId" value="${keyword.cId}"/>
-					<form:input type="hidden" path="createDate" value="${keyword.createDate}"/>
+					</table>					
+					<form:input type="hidden" path="uid" value="${member.uid}"/>					
 					<input type="submit" value="更新">
 					
 				</form:form>
 			</div>
+			<table>
+				<tbody>
+					
+					
+			
+				</tbody>
+			</table>
 		</div>
 		
 	</body>

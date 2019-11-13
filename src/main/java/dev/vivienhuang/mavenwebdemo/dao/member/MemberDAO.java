@@ -30,7 +30,7 @@ public class MemberDAO implements IMemberDAO {
 	@Override
 	public List<MemberVO> getMembers() {
 		Session session = sessionFactory.getCurrentSession();
-		Query<MemberVO> theQuery = session.createQuery("from MemberVO order by account", MemberVO.class);
+		Query<MemberVO> theQuery = session.createQuery("from MemberVO order by uid", MemberVO.class);
 		List<MemberVO> memberVOs = theQuery.getResultList();
 		return memberVOs;
 	}

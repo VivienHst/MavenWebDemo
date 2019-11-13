@@ -1,13 +1,46 @@
 package dev.vivienhuang.mavenwebdemo.entity;
 
-import javax.persistence.Column;
+import java.io.Serializable;
+
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-//@Entity
-//@Table(name="MemberPermission")
-public class MemberPermissionVO {
+@Entity
+@Table(name="MemberPermission")
+public class MemberPermissionVO implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	
+	@EmbeddedId
+    private MemberPermissionPK memberPermissionPK;
+    
+	public MemberPermissionVO() {
+		super();
+	}
+	public MemberPermissionVO(String account, String permission) {
+		super();
+		this.memberPermissionPK = new MemberPermissionPK(account, permission);
+	}
+
+	public MemberPermissionVO(MemberPermissionPK memberPermissionPK) {
+		super();
+		this.memberPermissionPK = memberPermissionPK;
+	}
+
+	public MemberPermissionPK getMemberPermissionPK() {
+		return memberPermissionPK;
+	}
+
+	public void setMemberPermissionPK(MemberPermissionPK memberPermissionPK) {
+		this.memberPermissionPK = memberPermissionPK;
+	}
+
+	@Override
+	public String toString() {
+		return "MemberPermissionVO [memberPermissionPK=" + memberPermissionPK + "]";
+	}
+    
 //	@Column(name="Account")
 //	private String account;
 //	
