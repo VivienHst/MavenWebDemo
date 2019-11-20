@@ -10,9 +10,8 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
 		<title>Skill</title>
-				<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/static/css/style.css">
-			
-			
+			<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/static/css/style.css">
+			<script type="text/javascript" src="${pageContext.request.contextPath}/resources/static/js/side_menu.js"></script>
 	</head>
 	<body>
 				
