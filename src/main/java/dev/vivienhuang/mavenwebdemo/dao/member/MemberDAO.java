@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Repository;
 
+import dev.vivienhuang.mavenwebdemo.entity.MemberPermissionVO;
 import dev.vivienhuang.mavenwebdemo.entity.MemberVO;
 
 @Repository
@@ -51,7 +52,15 @@ public class MemberDAO implements IMemberDAO {
 	@Override
 	public void deleteMember(int id) {
 		Session session = sessionFactory.getCurrentSession();
-		session.delete(session.get(MemberVO.class, id));
+		MemberVO memberVO = session.get(MemberVO.class, id);
+		Query<MemberPermissionVO> query = session.createQuery("from MemberPermissionVO where id.account = '" + memberVO.getAccount() + "'",
+				MemberPermissionVO.class); 
+		List<MemberPermissionVO> memberPermissionVOs = query.getResultList();
+		for (MemberPermissionVO memberPermissionVO : memberPermissionVOs) {
+			session.delete(memberPermissionVO);
+		}
+		
+		session.delete(memberVO);
 	}
 
 }

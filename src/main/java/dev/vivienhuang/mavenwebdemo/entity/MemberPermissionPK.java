@@ -15,6 +15,11 @@ public class MemberPermissionPK implements Serializable{
 		super();
 	}
 
+	public MemberPermissionPK(String account) {
+		super();
+		this.account = account;
+	}
+	
 	public MemberPermissionPK(String account, String permission) {
 		super();
 		this.account = account;

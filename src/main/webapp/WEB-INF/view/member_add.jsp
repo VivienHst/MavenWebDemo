@@ -39,14 +39,14 @@
 					<td>Email</td>
 					<td><form:input path="email"/></td>
 				</tr>
-				<tr>
+				<%-- <tr>
 					<td>PhoneCode</td>
 					<td><form:input path="phoneCode"/></td>
 				</tr>
 				<tr>
 					<td>PhoneNumber</td>
 					<td><form:input path="phoneNumber"/></td>
-				</tr>
+				</tr> --%>
 			</table>
 			<input type="submit" value="新增">				
 		</form:form>

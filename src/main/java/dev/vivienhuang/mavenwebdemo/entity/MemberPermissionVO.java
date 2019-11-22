@@ -18,6 +18,13 @@ public class MemberPermissionVO implements Serializable {
 	public MemberPermissionVO() {
 		super();
 	}
+	
+	public MemberPermissionVO(String account) {
+		super();
+		this.memberPermissionPK = new MemberPermissionPK(account);
+	}
+
+	
 	public MemberPermissionVO(String account, String permission) {
 		super();
 		this.memberPermissionPK = new MemberPermissionPK(account, permission);

@@ -33,8 +33,8 @@ public class MemberController {
 	public String getMemberDetail(@RequestParam("uid")int uid, Model model) {
 		MemberVO memberVO =  memberService.getMember(uid);
 		model.addAttribute("member", memberVO);
-		
 		model.addAttribute("memberPermissions", memberPermissionService.getMemberPermissions(memberVO.getAccount()));
+		model.addAttribute("newMemberPermission", new MemberPermissionPK(memberVO.getAccount()));
 		return "member_update";
 	}
 	
@@ -54,5 +54,22 @@ public class MemberController {
 		memberService.createMember(memberVO);
 		memberPermissionService.createMemberPermission(new MemberPermissionVO(new MemberPermissionPK(memberVO.getAccount(), "ROLE_EMPLOYEE")));
 		return "redirect:/member";
+
 	}	
+	
+	//memberDelete
+	
+	@GetMapping("/memberDelete")
+	public String memberDeleteAction(@RequestParam("uid")int uid) {
+		memberService.deleteMember(uid);
+		return "redirect:/member";
+	}
+	
+	@PostMapping("memberPermissionAdd")
+	public String memberPermissionAddAction(@RequestParam("uid")int uid, @ModelAttribute("newMemberPermission") MemberPermissionPK newMemberPermission){
+		
+		memberPermissionService.createMemberPermission(new MemberPermissionVO(newMemberPermission));
+		return "redirect:/member";
+
+	}
 }

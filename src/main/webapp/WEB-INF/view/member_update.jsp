@@ -44,18 +44,33 @@
 							</c:forEach>
 						</tbody>
 					</table>					
-					<form:input type="hidden" path="uid" value="${member.uid}"/>					
+					<form:input type="hidden" path="uid" value="${member.uid}"/>	
+					
+					<form:form action="permissionAdd" modelAttribute="newMemberPermission" method="post">
+						<table>
+							<tbody>
+							
+							<tr>
+				                <td><form:label path="country">新增權限:</form:label></td>
+				                <td>
+				                	<form:select path="country">
+				                        <form:option value="NONE" label="請選擇" />
+				                        <form:options items="${permissionList}" />
+				                    </form:select>
+				                 </td>
+				                 
+							</tbody>
+						</table>
+						<form:input type="hidden" path="uid" value="${newMemberPermission.account}"/>	
+					
+        				<input type="submit" value="新增">
+					
+					</form:form>			
 					<input type="submit" value="更新">
 					
 				</form:form>
 			</div>
-			<table>
-				<tbody>
-					
-					
-			
-				</tbody>
-			</table>
+		
 		</div>
 		
 	</body>
