@@ -57,6 +57,7 @@ public class MemberDAO implements IMemberDAO {
 				MemberPermissionVO.class); 
 		List<MemberPermissionVO> memberPermissionVOs = query.getResultList();
 		for (MemberPermissionVO memberPermissionVO : memberPermissionVOs) {
+			// 刪除相關權限
 			session.delete(memberPermissionVO);
 		}
 		

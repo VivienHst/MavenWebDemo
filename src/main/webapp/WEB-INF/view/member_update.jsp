@@ -28,12 +28,12 @@
 							
 							<tr>
 								<td>FirstName : </td>
-								<td><form:label  path="account" value="${member.firstName}"/>${member.firstName}</td>
+								<td><form:label  path="firstName" value="${member.firstName}"/>${member.firstName}</td>
 							</tr>
 							
 							<tr>
-								<td>FirstName : </td>
-								<td><form:label  path="account" value="${member.lastName}"/>${member.lastName}</td>
+								<td>LastName : </td>
+								<td><form:label  path="lastName" value="${member.lastName}"/>${member.lastName}</td>
 							</tr>
 							<c:forEach var="memberPermission" items="${memberPermissions}">
 							
@@ -46,29 +46,29 @@
 					</table>					
 					<form:input type="hidden" path="uid" value="${member.uid}"/>	
 					
-					<form:form action="permissionAdd" modelAttribute="newMemberPermission" method="post">
-						<table>
-							<tbody>
-							
-							<tr>
-				                <td><form:label path="country">新增權限:</form:label></td>
-				                <td>
-				                	<form:select path="country">
-				                        <form:option value="NONE" label="請選擇" />
-				                        <form:options items="${permissionList}" />
-				                    </form:select>
-				                 </td>
-				                 
-							</tbody>
-						</table>
-						<form:input type="hidden" path="uid" value="${newMemberPermission.account}"/>	
-					
-        				<input type="submit" value="新增">
-					
-					</form:form>			
 					<input type="submit" value="更新">
 					
 				</form:form>
+				
+				<form:form action="memberPermissionAdd" modelAttribute="newMemberPermission" method="post">
+					<table>
+						<tbody>
+						<tr>
+			                <td>新增權限 : </td>
+			                <td>
+			                	<form:select path="permission">
+			                        <form:option value="NONE" label="請選擇" />
+			                        <form:options items="${permissionList}" />
+			                    </form:select>
+			                 </td>
+			                 <td><input type="submit" value="新增"></td>
+						</tbody>
+					</table>
+					<form:input type="hidden" path="account" value="${newMemberPermission.account}"/>	
+				
+				
+				</form:form>			
+			
 			</div>
 		
 		</div>

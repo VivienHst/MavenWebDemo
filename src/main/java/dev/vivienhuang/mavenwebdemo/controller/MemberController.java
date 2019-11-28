@@ -1,5 +1,9 @@
 package dev.vivienhuang.mavenwebdemo.controller;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import dev.vivienhuang.mavenwebdemo.entity.MemberPermissionPK;
 import dev.vivienhuang.mavenwebdemo.entity.MemberPermissionVO;
 import dev.vivienhuang.mavenwebdemo.entity.MemberVO;
+import dev.vivienhuang.mavenwebdemo.entity.PermissionVO;
 import dev.vivienhuang.mavenwebdemo.service.member.IMemberPermissionService;
 import dev.vivienhuang.mavenwebdemo.service.member.IMemberService;
+import dev.vivienhuang.mavenwebdemo.service.member.IPermissionService;
 
 @Controller
 public class MemberController {
@@ -22,6 +28,9 @@ public class MemberController {
 
 	@Autowired 
 	IMemberPermissionService memberPermissionService;
+
+	@Autowired
+	IPermissionService permissionService;
 	
 	@GetMapping("/member")
 	public String getMemberList(Model model) {
@@ -33,8 +42,29 @@ public class MemberController {
 	public String getMemberDetail(@RequestParam("uid")int uid, Model model) {
 		MemberVO memberVO =  memberService.getMember(uid);
 		model.addAttribute("member", memberVO);
-		model.addAttribute("memberPermissions", memberPermissionService.getMemberPermissions(memberVO.getAccount()));
 		model.addAttribute("newMemberPermission", new MemberPermissionPK(memberVO.getAccount()));
+		
+		List<MemberPermissionVO> memberPermissionVOs 
+			= memberPermissionService.getMemberPermissions(memberVO.getAccount());
+		List<PermissionVO> permissionVOs = permissionService.getPermissions();
+		model.addAttribute("memberPermissions", memberPermissionVOs);
+		List<String> permissionStrs = new ArrayList<>();
+		for(PermissionVO permissionVO : permissionVOs) {
+			boolean isHadPermission = false;
+			for(MemberPermissionVO memberPermissionVO: memberPermissionVOs) {
+				if(memberPermissionVO.getMemberPermissionPK().getPermission().equals(permissionVO.getPermission())) {
+					isHadPermission = true;
+					continue;
+				}
+			}
+			
+			if(!isHadPermission) {
+				permissionStrs.add(permissionVO.getPermission());
+			}
+		}
+		
+		model.addAttribute("permissionList", permissionStrs);
+
 		return "member_update";
 	}
 	
@@ -57,6 +87,16 @@ public class MemberController {
 
 	}	
 	
+	@PostMapping("/memberUpdate")
+	public String memberUpdateAction(@ModelAttribute("member") MemberVO memberVO) {
+		
+		System.out.println("memberUpdate member : " + memberVO.toString());
+		memberVO.setUpdateDate(new java.sql.Timestamp(System.currentTimeMillis()));
+		memberService.updateMember(memberVO);
+		return "redirect:/member";
+
+	}	
+	
 	//memberDelete
 	
 	@GetMapping("/memberDelete")
@@ -66,10 +106,8 @@ public class MemberController {
 	}
 	
 	@PostMapping("memberPermissionAdd")
-	public String memberPermissionAddAction(@RequestParam("uid")int uid, @ModelAttribute("newMemberPermission") MemberPermissionPK newMemberPermission){
-		
+	public String memberPermissionAddAction(@ModelAttribute("newMemberPermission") MemberPermissionPK newMemberPermission){
 		memberPermissionService.createMemberPermission(new MemberPermissionVO(newMemberPermission));
 		return "redirect:/member";
-
 	}
 }
