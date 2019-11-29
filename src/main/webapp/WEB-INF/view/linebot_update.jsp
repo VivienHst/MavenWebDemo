@@ -37,7 +37,22 @@
 							<td>Type : </td>
 							<td><form:input path="type" value="${linebot.type}"/></td>
 						</tr>
-						<tr>					
+						
+						<tr>	
+							<td>Skill : </td>
+							<td>
+								<table>
+									<c:forEach var="skill" items="${linebot.skills}">
+										<tr>	
+											<td>
+												${skill.skillName}
+											</td>
+										</tr>
+									</c:forEach>
+								</table>
+								
+							</td>					
+						</tr>
 					</tbody>
 				</table>
 				<form:input type="hidden" path="botId" value="${linebot.botId}"/>

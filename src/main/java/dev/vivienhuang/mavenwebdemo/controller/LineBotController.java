@@ -1,5 +1,7 @@
 package dev.vivienhuang.mavenwebdemo.controller;
 
+import java.util.Iterator;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import dev.vivienhuang.mavenwebdemo.entity.LineBotVO;
+import dev.vivienhuang.mavenwebdemo.entity.SkillVO;
 import dev.vivienhuang.mavenwebdemo.service.linebot.ILineBotService;
 
 @Controller
@@ -39,8 +42,15 @@ public class LineBotController {
 	@GetMapping("/linebotDetail")
 	public String getLinebotDetailPage(@RequestParam("botId")int botId, 
 			Model model) {
-		model.addAttribute("linebot", lineBotService.getLineBot(botId));
-		return "linebot_update";
+		
+		LineBotVO lineBotVO = lineBotService.getLineBot(botId);
+		model.addAttribute("linebot", lineBotVO);
+		
+		
+		for (SkillVO skillVO : lineBotVO.getSkills()) {
+            System.out.print(skillVO.toString());
+		}
+  		return "linebot_update";
 	}
 	
 	@PostMapping("/linebotUpdate")

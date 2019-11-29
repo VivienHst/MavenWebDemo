@@ -1,18 +1,25 @@
 package dev.vivienhuang.mavenwebdemo.entity;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="LineBot")
 public class LineBotVO {
-	
+		
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="BotId")
@@ -35,6 +42,14 @@ public class LineBotVO {
 	
 	@Column(name="UpdateDate")
 	private Timestamp updateDate;
+	
+	@ManyToMany(cascade= {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@JoinTable(
+			name="LineBot_Skill",
+			joinColumns= {@JoinColumn(name="BotId")},
+			inverseJoinColumns= {@JoinColumn(name="SkillId")}
+			)
+	private Set<SkillVO> skills = new HashSet<>();
 	
 	public LineBotVO() {
 		super();
@@ -103,6 +118,14 @@ public class LineBotVO {
 
 	public void setUpdateDate(Timestamp updateDate) {
 		this.updateDate = updateDate;
+	}
+	
+	public Set<SkillVO> getSkills() {
+		return skills;
+	}
+
+	public void setSkills(Set<SkillVO> skills) {
+		this.skills = skills;
 	}
 
 	@Override

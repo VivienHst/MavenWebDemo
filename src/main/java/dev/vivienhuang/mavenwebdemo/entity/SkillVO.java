@@ -1,10 +1,15 @@
 package dev.vivienhuang.mavenwebdemo.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -30,7 +35,10 @@ public class SkillVO {
 	
 	@Column(name="SkillDesc")
 	private String skillDesc;
-
+	
+	@ManyToMany(mappedBy = "skills", fetch = FetchType.EAGER)
+	private Set<LineBotVO> linebots = new HashSet<>();
+	
 	public SkillVO() {
 		super();
 	}
@@ -63,6 +71,14 @@ public class SkillVO {
 
 	public void setSkillDesc(String skillDesc) {
 		this.skillDesc = skillDesc;
+	}
+
+	public Set<LineBotVO> getLinebots() {
+		return linebots;
+	}
+
+	public void setLinebots(Set<LineBotVO> linebots) {
+		this.linebots = linebots;
 	}
 
 	@Override
