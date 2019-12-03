@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name="Skill")
 public class SkillVO {
@@ -36,7 +38,8 @@ public class SkillVO {
 	@Column(name="SkillDesc")
 	private String skillDesc;
 	
-	@ManyToMany(mappedBy = "skills", fetch = FetchType.EAGER)
+	@ManyToMany(mappedBy = "skills", fetch = FetchType.LAZY)
+	@JsonIgnore
 	private Set<LineBotVO> linebots = new HashSet<>();
 	
 	public SkillVO() {
