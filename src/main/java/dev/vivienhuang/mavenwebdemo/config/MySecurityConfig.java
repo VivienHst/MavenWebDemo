@@ -5,6 +5,7 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -36,9 +37,18 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter{
 		characterEncodingFilter.setForceEncoding(true);
 		http.addFilterBefore(characterEncodingFilter, CsrfFilter.class);
 		
+		/*
+		 * http
+  .httpBasic().and()
+  .authorizeRequests()
+    .antMatchers(HttpMethod.POST, "/employees").hasRole("ADMIN")
+    .antMatchers(HttpMethod.PUT, "/employees/**").hasRole("ADMIN")
+    .antMatchers(HttpMethod.PATCH, "/employees/**").hasRole("ADMIN");
+		 * */
 		// 使用的ROLE DB裡面一定要存成ROLE_ROLENAME
-		http.authorizeRequests()
-			.antMatchers("/guest", "/test", "/api", "/home").permitAll()
+		http.csrf().disable()
+			.authorizeRequests()
+			.antMatchers("/guest", "/test", "/api", "/home", "/uploadImageFile").permitAll()
 			.antMatchers("/createMember", "/keyword").hasRole("EMPLOYEE")
 			.antMatchers("/manager/**").hasRole("MANAGER")
 			.antMatchers("/admin/**").hasRole("ADMIN")
