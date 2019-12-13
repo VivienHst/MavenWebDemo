@@ -1,5 +1,6 @@
 package dev.vivienhuang.mavenwebdemo.rest;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dev.vivienhuang.mavenwebdemo.entity.ChatKeyWordVO;
 import dev.vivienhuang.mavenwebdemo.entity.LineBotVO;
@@ -63,7 +66,7 @@ public class BotRestController {
 	
 	@PostMapping("/charEcho")
 	public String getEchoString(@RequestParam String chat){
-		sendRestResponseTest(chat);
+		sendMessageToLineUser(myLineId, chat);
 		return "Echo : " + chat;
 	}
 	
@@ -87,12 +90,17 @@ public class BotRestController {
 
 	    HttpEntity<MultiValueMap<String, String>> request 
 	    	= new HttpEntity<MultiValueMap<String, String>>(map, headers);
+	    System.out.println("request : " + request.toString());
 	    ResponseEntity<String> response = restTemplate.postForEntity( url, request , String.class );
 	    System.out.println(response.getBody());
 	}
 	
+	public static String CHANNEL_ACCESS_TOKEN = "";
+	// line帳號的Channel Secret，要到line developers後台取得
+    public static String ChannelSecret_Test = "";
 	
-	
+    private String myLineId = "";
+    
 	private void sendMessageToLineUser(String userId, String message) {
 		TextMessage textMessage = new TextMessage(message);
 		MessagePayload messagePayload = new MessagePayload();
@@ -100,24 +108,63 @@ public class BotRestController {
 		
 		List<LineMessage> messages = new ArrayList<LineMessage>();
 		messages.add(textMessage);
-		
-		
+		messagePayload.setMessages(messages);
 		final String url = "https://api.line.me/v2/bot/message/push";
 
 	    RestTemplate restTemplate = new RestTemplate();	    
 	    HttpHeaders headers = new HttpHeaders();
-	    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+	    headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+	    headers.set("Authorization", "Bearer " + CHANNEL_ACCESS_TOKEN);
+	    /*
+	     * Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + CHANNEL_ACCESS_TOKEN,*/
 
-	    MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
+	    MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 //	    map.add("payload", messages);
+	    ObjectMapper Obj = new ObjectMapper(); 
+	    String jsonStr = "";
+        try { 
+  
+            // get Oraganisation object as a json string 
+            jsonStr = Obj.writeValueAsString(messagePayload); 
+  
+            // Displaying JSON String 
+            System.out.println(jsonStr); 
+        } catch (IOException e) { 
+            System.out.println(e.getMessage()); 
 
+            e.printStackTrace(); 
+        } 
+	    System.out.println("payload : " + jsonStr);
+
+//	    map.add("payload", "{\n" + 
+//	    		"    \"to\": \"U21428619758440bf95597dd80152a808\",\n" + 
+//	    		"    \"messages\": [\n" + 
+//	    		"        {\n" + 
+//	    		"            \"type\": \"text\",\n" + 
+//	    		"            \"text\": \"ckaty\"\n" + 
+//	    		"        }\n" + 
+//	    		"    ]\n" + 
+//	    		"}");
+
+	    
+	    map.add("to", "U21428619758440bf95597dd80152a808");
+	    
+	    map.add("messages", jsonStr);
+//	    map.add("messages", "[\n" + 
+//	         	    		"        {\n" + 
+//	        	    		"            \"type\": \"text\",\n" + 
+//	        	    		"            \"text\": \"ckaty\"\n" + 
+//	        	    		"        }\n" + 
+//	        	    		"    ]\n" );
+	    
 	    HttpEntity<MultiValueMap<String, String>> request 
 	    	= new HttpEntity<MultiValueMap<String, String>>(map, headers);
 	    ResponseEntity<String> response = restTemplate.postForEntity( url, request , String.class );
 	    System.out.println(response.getBody());
 		
 	}
-	
+
 	
 	String textMessage = "{\n" + 
 			"    \"type\": \"text\",\n" + 
