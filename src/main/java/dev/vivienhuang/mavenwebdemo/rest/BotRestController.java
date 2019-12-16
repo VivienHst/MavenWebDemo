@@ -10,6 +10,7 @@ import org.jboss.logging.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
@@ -66,7 +67,15 @@ public class BotRestController {
 	
 	@PostMapping("/charEcho")
 	public String getEchoString(@RequestParam String chat){
-		sendMessageToLineUser(myLineId, chat);
+		
+		if(chat.equals("test")) {
+			sendTestRequest();
+		} else {
+			sendMessageToLineUser(myLineId, chat);
+//			sendLineMessage2(chat, myLineId);
+
+		}
+		
 		return "Echo : " + chat;
 	}
 	
@@ -75,7 +84,22 @@ public class BotRestController {
 		return "Echo2 : " + chat;
 	}
 	
-	
+	private void sendTestRequest() {
+		final String url = "https://ptsv2.com/t/vn1tr-1576490349";
+	    RestTemplate restTemplate = new RestTemplate();	    
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_JSON);
+
+	    MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
+
+	    HttpEntity<MultiValueMap<String, String>> request 
+	    	= new HttpEntity<MultiValueMap<String, String>>(map, headers);
+	    System.out.println("request : " + request.toString());
+//	    ResponseEntity<String> response = restTemplate.postForEntity( url, request , String.class );
+	    ResponseEntity<String> response = restTemplate.postForEntity( url, request , String.class );
+
+	    System.out.println(response.getBody());
+	}
     
 	private static void sendRestResponseTest(String chat)
 	{
@@ -100,6 +124,7 @@ public class BotRestController {
     public static String ChannelSecret_Test = "";
 	
     private String myLineId = "";
+
     
 	private void sendMessageToLineUser(String userId, String message) {
 		TextMessage textMessage = new TextMessage(message);
@@ -113,21 +138,13 @@ public class BotRestController {
 
 	    RestTemplate restTemplate = new RestTemplate();	    
 	    HttpHeaders headers = new HttpHeaders();
-	    headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-	    headers.set("Authorization", "Bearer " + CHANNEL_ACCESS_TOKEN);
-	    /*
-	     * Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer ' + CHANNEL_ACCESS_TOKEN,*/
-
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("Authorization", String.format("%s %s", "Bearer", CHANNEL_ACCESS_TOKEN));
 	    MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-//	    map.add("payload", messages);
 	    ObjectMapper Obj = new ObjectMapper(); 
 	    String jsonStr = "";
         try { 
-  
-            // get Oraganisation object as a json string 
             jsonStr = Obj.writeValueAsString(messagePayload); 
-  
             // Displaying JSON String 
             System.out.println(jsonStr); 
         } catch (IOException e) { 
@@ -135,64 +152,18 @@ public class BotRestController {
 
             e.printStackTrace(); 
         } 
-	    System.out.println("payload : " + jsonStr);
+	  
+	    HttpEntity<String> request = new HttpEntity<String>(jsonStr, headers);
+	    System.out.println("request : " + request.toString());
 
-//	    map.add("payload", "{\n" + 
-//	    		"    \"to\": \"U21428619758440bf95597dd80152a808\",\n" + 
-//	    		"    \"messages\": [\n" + 
-//	    		"        {\n" + 
-//	    		"            \"type\": \"text\",\n" + 
-//	    		"            \"text\": \"ckaty\"\n" + 
-//	    		"        }\n" + 
-//	    		"    ]\n" + 
-//	    		"}");
-
-	    
-	    map.add("to", "U21428619758440bf95597dd80152a808");
-	    
-	    map.add("messages", jsonStr);
-//	    map.add("messages", "[\n" + 
-//	         	    		"        {\n" + 
-//	        	    		"            \"type\": \"text\",\n" + 
-//	        	    		"            \"text\": \"ckaty\"\n" + 
-//	        	    		"        }\n" + 
-//	        	    		"    ]\n" );
-	    
-	    HttpEntity<MultiValueMap<String, String>> request 
-	    	= new HttpEntity<MultiValueMap<String, String>>(map, headers);
 	    ResponseEntity<String> response = restTemplate.postForEntity( url, request , String.class );
 	    System.out.println(response.getBody());
 		
 	}
-
 	
 	String textMessage = "{\n" + 
 			"    \"type\": \"text\",\n" + 
 			"    \"text\": \"Hello, world\"\n" + 
 			"}";
-	
-	/*
-	 * public static string PushTextMessage(string LineId, string TextMessage, string ChannelAccessToken)
-        {
-            if (TextMessage.Contains("\t")) 
-            {
-                TextMessage = TextMessage.Replace("\t", "\n");
-            }
-
-
-            Models.LineMessage.LineMessage lineMessage = new Models.LineMessage.LineMessage()
-            {
-                to = LineId,
-                messages = new List<MessageObject>(){
-                    new TextMessage(){
-                        text = TextMessage
-                    }
-                }
-            };
-
-            string text = JsonConvert.SerializeObject(lineMessage);
-
-            return PushMessageToLine(text, ChannelAccessToken);
-        }*/
 	
 }
