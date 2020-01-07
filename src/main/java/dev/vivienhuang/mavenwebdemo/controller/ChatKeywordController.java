@@ -19,8 +19,6 @@ public class ChatKeywordController {
 	IChatKeyWordService chatKeyWordService;
 	@GetMapping("/keyword")
 	public String getKeywordPage(Model model) {
-		System.out.println("\n chatKeyWordService.getChatKeyWords()" 
-				+ chatKeyWordService.getChatKeyWords().get(0).toString());
 		List<ChatKeyWordVO> chatKeyWordVOs = chatKeyWordService.getChatKeyWords();
 		model.addAttribute("chatKeywords", chatKeyWordVOs);
 		model.addAttribute("keyword", new ChatKeyWordVO());

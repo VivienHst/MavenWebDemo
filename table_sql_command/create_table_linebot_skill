@@ -1,0 +1,33 @@
+	
+create table LineBot(
+    BotId int not null IDENTITY(1,1),
+    Token varchar(100) not null,
+    Secret varchar(60) not null,
+    DisplayName NVARCHAR(20) not null,
+    Type varchar(10) not null,
+    CreateDate datetime not null,
+    UpdateDate datetime,
+    CONSTRAINT LINE_BOT_BOTID_PK PRIMARY KEY (BotId)
+)
+create table Skill (
+    SkillId               int NOT NULL  IDENTITY(1, 1),
+    SkillName             nvarchar(40) not null,
+    SkillDesc              nvarchar(100),
+    CONSTRAINT SKILL_SKILLID_PK PRIMARY KEY (SKILLID));
+
+create table LineBot_Skill (
+    BotId int not null,
+    SkillId int not null,
+    CONSTRAINT LINEBOT_SKILL_BOTID_FK FOREIGN KEY (BotId) REFERENCES LineBot (BotId),
+    CONSTRAINT LINEBOT_SKILL_SKILLID_FK FOREIGN Key (SkillId) REFERENCES Skill (SkillId),
+    CONSTRAINT LINEBOT_SKILL_PK PRIMARY KEY (BotId, SkillId)
+)
+
+
+SELECT LineBot.BotId, LineBot.DisplayName, LineBot.Token, Skill.SkillName
+  FROM LineBot
+LEFT OUTER JOIN LineBot_Skill
+  ON LineBot.BotId = LineBot_Skill.BotId
+ AND LineBot.BotId= 1
+LEFT OUTER JOIN Skill
+  ON LineBot_Skill.SkillId = Skill.SkillId

@@ -3,20 +3,23 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
-"http://www.w3.org/TR/html4/loose.dtd">
+    
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
 
-<link type="text/css" 
-	rel="stylesheet" 
-	href="${pageContext.request.contextPath}/resources/css/style.css"/>
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/static/css/style.css">
+
+
 </head>
 <body>
-	<h1>keyword_list.jsp</h1>
-	<form:form action="saveChatKeyword" modelAttribute ="keyword"  method="post">
+			
+	<jsp:include page="navbar_and_side_menu.jsp"></jsp:include><!-- 第二種 -->
+
+	<div id="main">
+		<form:form action="saveChatKeyword" modelAttribute ="keyword"  method="post">
 		<table border="1" >				
 			<tr>
 				<td>Key : </td>
@@ -61,9 +64,17 @@
 				<td>${chatKeyword.chatValue}</td>
 				<td>${chatKeyword.createDate}</td>
 				<td><a href="${dateilLink}">修改</a></td>				
-				<td><a href="${deleteLink}">刪除</a></td>		
+				<td><a href="${deleteLink}">刪除</a></td>	
+					
 			</tr>
 		</c:forEach>
 	</table>
+	<a href="${pageContext.request.contextPath}/home">Home</a>	
+
+	</div>
+<%-- 	<script type="text/javascript" src="<c:url value="/resources/static/js/side_menu.js" />"></script>
+ --%>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/static/js/side_menu.js"></script>
+
 </body>
 </html>

@@ -22,7 +22,6 @@ public class LineBotController {
 	
 	@GetMapping("/linebot")
 	public String getLineBotPage(Model model) {
-		System.out.println(lineBotService.getLineBots().get(0).toString());
 		model.addAttribute("lineBots", lineBotService.getLineBots());
 		model.addAttribute("linebot", new LineBotVO());
 		return "linebot_list";

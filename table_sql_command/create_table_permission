@@ -6,8 +6,16 @@ create table Permission(
     CONSTRAINT PERMISSION_ID_PK PRIMARY KEY (Id)
 )
 
-insert into Permission values( 'ROLE_EMPLOYEE')
-insert into Permission values( 'ROLE_MANAGER')
+-- insert into Permission values( 'ROLE_EMPLOYEE')
+-- insert into Permission values( 'ROLE_MANAGER')
 
 
-select * from Permission
+-- select * from Permission
+
+-- 使用者權限 --
+
+create table MemberPermission (
+    Account varchar(16) not null,
+    Permission varchar(50) not null,
+    CONSTRAINT PERMISSION_ACCOUNT_PERMISSION_UK UNIQUE (Account, Permission)
+);

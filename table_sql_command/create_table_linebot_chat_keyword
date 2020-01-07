@@ -1,0 +1,7 @@
+create table ChatKeyWord(
+    CId int not null IDENTITY(1,1),
+    ChatKey nvarchar(20) not null,
+    ChatValue nvarchar(100) not null,
+    CreateDate datetime not null,
+    CONSTRAINT CHAT_KEY_WORD_CID_PK PRIMARY KEY (CId)
+)
