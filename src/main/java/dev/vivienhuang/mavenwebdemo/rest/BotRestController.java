@@ -119,11 +119,19 @@ public class BotRestController {
 	    System.out.println(response.getBody());
 	}
 	
-	public static String CHANNEL_ACCESS_TOKEN = "";
-	// line帳號的Channel Secret，要到line developers後台取得
-    public static String ChannelSecret_Test = "";
+//	public static String CHANNEL_ACCESS_TOKEN = "";
+//	// line帳號的Channel Secret，要到line developers後台取得
+//    public static String ChannelSecret_Test = "";
+//	
+//    private String myLineId = "";
 	
-    private String myLineId = "";
+	public static String CHANNEL_ACCESS_TOKEN = "dlnJHCvUro2QJe/NhbuOtuHZGxR4" +
+            "hGhHN32nAJ78TNSn8eExk5LAzZwDC28zw1doJZrkDP5dmPTen3cz5GsXlrG4b1R/DOE" +
+            "IMWyReA5CrWuyUJvbpg2AveUwxAsOZPl5cq9PIjxfkHZfYIKsCkc66gdB04t89/1O/w1cDnyilFU=";
+	// line帳號的Channel Secret，要到line developers後台取得
+    public static String ChannelSecret_Test = "eb65857006384e8845aa72f6ef5cdefa";
+	
+    private String myLineId = "U21428619758440bf95597dd80152a808";
 
     
 	private void sendMessageToLineUser(String userId, String message) {

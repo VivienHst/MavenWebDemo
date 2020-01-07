@@ -139,5 +139,6 @@ public class MyAppConfig implements WebMvcConfigurer {
 	    CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
 	    multipartResolver.setMaxUploadSize(100000);
 	    return multipartResolver;
-	}	
+	}
+	
 }
