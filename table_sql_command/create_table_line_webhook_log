@@ -1,0 +1,7 @@
+create table LineWebhookLog(
+    Id int not null IDENTITY(1,1),
+    Destination nvarchar(100) not null,
+    Data nvarchar(max) not null,
+    CreateDate datetime not null,
+    CONSTRAINT LINE_WEBHOOK_LOG_ID_PK PRIMARY KEY (Id)
+)
