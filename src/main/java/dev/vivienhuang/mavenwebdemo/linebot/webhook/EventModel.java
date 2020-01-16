@@ -9,6 +9,7 @@ public class EventModel {
 	private String mode;
 	private String timestamp;
 	private SourceModel source;
+	private ReceiveMessageModel message;
 	
 	public String getReplyToken() {
 		return replyToken;
@@ -40,5 +41,10 @@ public class EventModel {
 	public void setSource(SourceModel source) {
 		this.source = source;
 	}
-
+	public ReceiveMessageModel getMessage() {
+		return message;
+	}
+	public void setMessage(ReceiveMessageModel message) {
+		this.message = message;
+	}
 }

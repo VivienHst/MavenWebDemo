@@ -108,7 +108,7 @@ public class BotRestController {
 	    RestTemplate restTemplate = new RestTemplate();	    
 	    HttpHeaders headers = new HttpHeaders();
 	    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
+	    
 	    MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
 	    map.add("chat", chat);
 
@@ -146,7 +146,7 @@ public class BotRestController {
 
 	    RestTemplate restTemplate = new RestTemplate();	    
 	    HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
         headers.add("Authorization", String.format("%s %s", "Bearer", CHANNEL_ACCESS_TOKEN));
 //	    MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 	    ObjectMapper Obj = new ObjectMapper(); 
