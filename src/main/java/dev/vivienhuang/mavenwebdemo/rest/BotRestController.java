@@ -115,7 +115,7 @@ public class BotRestController {
 	    HttpEntity<MultiValueMap<String, String>> request 
 	    	= new HttpEntity<MultiValueMap<String, String>>(map, headers);
 	    System.out.println("request : " + request.toString());
-	    ResponseEntity<String> response = restTemplate.postForEntity( url, request , String.class );
+	    ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
 	    System.out.println(response.getBody());
 	}
 	
@@ -148,7 +148,7 @@ public class BotRestController {
 	    HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", String.format("%s %s", "Bearer", CHANNEL_ACCESS_TOKEN));
-	    MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+//	    MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 	    ObjectMapper Obj = new ObjectMapper(); 
 	    String jsonStr = "";
         try { 
