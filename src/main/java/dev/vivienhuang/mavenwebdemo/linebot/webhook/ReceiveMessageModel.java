@@ -1,17 +1,16 @@
 package dev.vivienhuang.mavenwebdemo.linebot.webhook;
 
 public class ReceiveMessageModel {
-	
-	/*
-	 * "message": {
-    "id": "325708",
-    "type": "text",
-    "text": "Hello, world!"
-  }*/
-	
+
 	private String id;
 	private String type;
 	private String text;
+	private String stickerId;
+	private String packageId;
+	private String stickerResourceType;
+	private ContentProvider contentProvider;
+
+	
 	public String getId() {
 		return id;
 	}
@@ -30,7 +29,29 @@ public class ReceiveMessageModel {
 	public void setText(String text) {
 		this.text = text;
 	}
-
-	
+	public String getStickerId() {
+		return stickerId;
+	}
+	public void setStickerId(String stickerId) {
+		this.stickerId = stickerId;
+	}
+	public String getPackageId() {
+		return packageId;
+	}
+	public void setPackageId(String packageId) {
+		this.packageId = packageId;
+	}
+	public String getStickerResourceType() {
+		return stickerResourceType;
+	}
+	public void setStickerResourceType(String stickerResourceType) {
+		this.stickerResourceType = stickerResourceType;
+	}
+	public ContentProvider getContentProvider() {
+		return contentProvider;
+	}
+	public void setContentProvider(ContentProvider contentProvider) {
+		this.contentProvider = contentProvider;
+	}
 	
 }

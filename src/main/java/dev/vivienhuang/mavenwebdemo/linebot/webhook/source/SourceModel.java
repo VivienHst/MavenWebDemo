@@ -2,7 +2,7 @@ package dev.vivienhuang.mavenwebdemo.linebot.webhook.source;
 
 public class SourceModel {
 	private String type;
-	private String userid;
+	private String userId;
 	private String groupId;
 	private String roomId;
 	
@@ -12,11 +12,12 @@ public class SourceModel {
 	public void setType(String type) {
 		this.type = type;
 	}
-	public String getUserid() {
-		return userid;
+	
+	public String getUserId() {
+		return userId;
 	}
-	public void setUserid(String userid) {
-		this.userid = userid;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	public String getGroupId() {
 		return groupId;

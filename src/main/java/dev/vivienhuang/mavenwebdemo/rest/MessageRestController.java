@@ -2,10 +2,17 @@ package dev.vivienhuang.mavenwebdemo.rest;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.sound.sampled.LineEvent;
 
+import org.apache.commons.io.IOUtils;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -41,6 +48,50 @@ public class MessageRestController {
     }
 	
 	@PostMapping("/line_message")
+    public String receiveAlMessage(HttpServletRequest request) {
+		
+		Map<String, String> returnValue = new HashMap<String, String>();
+		
+		Enumeration<String> headerNames = request.getHeaderNames();
+		
+		while(headerNames.hasMoreElements()) {
+			String headerName = headerNames.nextElement();
+			returnValue.put(headerName, request.getHeader(headerName));
+		}
+		
+		String body = "";
+		try {
+			body =  IOUtils.toString(request.getReader());
+			returnValue.put("body", body);
+			lineWebhookLogService.createLineWebhookLog(
+					new LineWebhookLogVO(
+							new JSONObject(body).getString("destination"),
+							body, 
+							new java.sql.Timestamp(System.currentTimeMillis()))
+					);
+			ObjectMapper objectMapper = new ObjectMapper();
+			WebhookModel webhookModel = objectMapper.readValue(body, WebhookModel.class);
+			
+			
+			for(EventModel lineEvent : webhookModel.getEvents()) { 	
+				if(lineEvent.getType().equals("message") && lineEvent.getMessage().getType().equals("text")) {
+					List<MessageModel> messageModels = new ArrayList<>();
+					messageModels.add(new MessageModel("text", lineEvent.getMessage().getText()));
+					sendReplyMessage(new ReplyMessageModel(lineEvent.getReplyToken(), messageModels));
+				}
+				
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		System.out.println("message : " + returnValue.toString());
+        return "ok";
+    }
+	
+	@PostMapping("/line_message2")
     public String receiveLineMessage(@RequestBody WebhookModel message) {
 		ObjectMapper mapper = new ObjectMapper();
 		//Object to JSON in String
@@ -64,26 +115,7 @@ public class MessageRestController {
 			e.printStackTrace();
 		}
 		
-		for(EventModel lineEvent : message.getEvents()) {
-			/*
-			 * {
-			    "destination": "U1891f48c88a0643a59fa39eb3909be1e",
-			    "events": [
-			        {
-			            "replyToken": "ea52a4d2f8c4432c9194cb7bbf663006",
-			            "type": "message",
-			            "mode": "active",
-			            "timestamp": "1579192167128",
-			            "source": {
-			                "type": "user",
-			                "userid": null,
-			                "groupId": null,
-			                "roomId": null
-			            }
-			        }
-			    ]
-			}*/
-			
+		for(EventModel lineEvent : message.getEvents()) { 	
 			if(lineEvent.getType().equals("message")) {
 				List<MessageModel> messageModels = new ArrayList<>();
 				messageModels.add(new MessageModel("text", lineEvent.getMessage().getText()));
