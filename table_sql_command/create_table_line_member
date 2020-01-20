@@ -1,0 +1,14 @@
+ Create table LineMember(
+     LineId varchar(50) not null,
+     LineName nvarchar(50) null,
+     LinePicture nvarchar(200)  null,
+     BotId int not null,
+     MemberStatus [int] not null,
+     CreateDate datetime not null,
+     UpdateDate datetime null,
+    constraint LINE_MEMBER_UID_PK PRIMARY KEY(LineId)
+    CONSTRAINT LINE_MEMBER_BOTID_FK FOREIGN KEY (BotId) REFERENCES LineBot (BotId),
+    
+ )
+ GO
+ 
