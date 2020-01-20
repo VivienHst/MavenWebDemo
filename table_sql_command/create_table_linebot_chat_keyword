@@ -1,3 +1,5 @@
+-- =============================================
+
 create table ChatKeyWord(
     CId int not null IDENTITY(1,1),
     ChatKey nvarchar(20) not null,
@@ -5,3 +7,65 @@ create table ChatKeyWord(
     CreateDate datetime not null,
     CONSTRAINT CHAT_KEY_WORD_CID_PK PRIMARY KEY (CId)
 )
+
+-- =============================================
+
+create table ChatKeyWordGetLog(
+    AutoId int not null IDENTITY(1,1),
+    CId int not null,
+    LineId int not null,
+    LogDate datetime not null,
+    CONSTRAINT CHAT_KEY_WORD_GET_AUTO_ID_PK PRIMARY KEY (AutoId)
+)
+
+-- =============================================
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		vivien
+-- Create date: 20200120
+-- Description:	<Description,,>
+-- exec SP_KeyResponseGet N'key',N'lineid'
+-- =============================================
+CREATE PROCEDURE [dbo].[KeywordResponseGet]
+	@keyword nvarchar(20),
+	@lineId varchar(50)
+AS
+BEGIN
+	SET NOCOUNT ON;	
+	declare @code int
+	declare @ChatValue nvarchar(100)
+    declare @CId int
+
+	set @code = 0
+	
+
+	select top 1 @ChatValue = [ChatValue], @CId = [CId] from [dbo].[ChatKeyWord] with (nolock)
+	where  [ChatKey] = @keyword
+
+	if @ChatValue is not null
+	begin
+		set @code = 1
+		INSERT INTO [dbo].[ChatKeyWordGetLog]
+           ([CId]
+           ,[LineId]
+           ,[LogDate])
+        VALUES(@CId,@lineId,GETDATE())
+	end
+	if @ChatValue is null
+	begin
+		set @ChatValue = ''
+	end
+	select @ChatValue as message, @code as code
+
+END
+
+GO
+
+
+-- =============================================
+
+
