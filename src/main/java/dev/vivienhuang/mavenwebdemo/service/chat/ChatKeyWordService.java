@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import dev.vivienhuang.mavenwebdemo.dao.chat.IChatKeyWordDAO;
+import dev.vivienhuang.mavenwebdemo.entity.BasicDBMessageVO;
 import dev.vivienhuang.mavenwebdemo.entity.ChatKeyWordVO;
 
 @Service
@@ -43,6 +44,12 @@ public class ChatKeyWordService implements IChatKeyWordService{
 	@Transactional
 	public void deleteChatKeyWord(int cId) {
 		chatKeyWordDAO.deleteChatKeyWord(cId);
+	}
+
+	@Override
+	@Transactional
+	public BasicDBMessageVO getKeyWord(String key, String lineid) {
+		return chatKeyWordDAO.getKeyWord(key, lineid);
 	}
 
 }

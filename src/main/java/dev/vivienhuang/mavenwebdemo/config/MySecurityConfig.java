@@ -47,8 +47,8 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter{
 		// 使用的ROLE DB裡面一定要存成ROLE_ROLENAME
 		http.csrf().disable()
 			.authorizeRequests()
-			.antMatchers("/guest", "/test", "/api", "/home", "/uploadImageFile").permitAll()
-			.antMatchers("/createMember", "/keyword").hasRole("EMPLOYEE")
+			.antMatchers("/guest", "/test", "/api", "/home", "/uploadImageFile", "/keyword").permitAll()
+			.antMatchers("/createMember").hasRole("EMPLOYEE")
 			.antMatchers("/manager/**").hasRole("MANAGER")
 			.antMatchers("/admin/**").hasRole("ADMIN")
 			.and()

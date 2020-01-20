@@ -2,6 +2,7 @@ package dev.vivienhuang.mavenwebdemo.service.chat;
 
 import java.util.List;
 
+import dev.vivienhuang.mavenwebdemo.entity.BasicDBMessageVO;
 import dev.vivienhuang.mavenwebdemo.entity.ChatKeyWordVO;
 
 public interface IChatKeyWordService {
@@ -10,4 +11,6 @@ public interface IChatKeyWordService {
 	public List<ChatKeyWordVO> getChatKeyWords();
 	public void updateChatKeyWord(ChatKeyWordVO chatKeyWordVO);
 	public void deleteChatKeyWord(int cId);
+	public BasicDBMessageVO getKeyWord(String key, String lineid);
+
 }

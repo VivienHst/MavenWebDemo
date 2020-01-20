@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import dev.vivienhuang.mavenwebdemo.entity.BasicDBMessageVO;
 import dev.vivienhuang.mavenwebdemo.entity.ChatKeyWordVO;
 import dev.vivienhuang.mavenwebdemo.service.chat.IChatKeyWordService;
 
@@ -22,7 +23,6 @@ public class ChatKeywordController {
 		List<ChatKeyWordVO> chatKeyWordVOs = chatKeyWordService.getChatKeyWords();
 		model.addAttribute("chatKeywords", chatKeyWordVOs);
 		model.addAttribute("keyword", new ChatKeyWordVO());
-
 		return "keyword_list";
 	}
 	

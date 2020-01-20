@@ -28,11 +28,13 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import dev.vivienhuang.mavenwebdemo.entity.BasicDBMessageVO;
 import dev.vivienhuang.mavenwebdemo.entity.LineWebhookLogVO;
 import dev.vivienhuang.mavenwebdemo.linebot.message.MessageModel;
 import dev.vivienhuang.mavenwebdemo.linebot.message.ReplyMessageModel;
 import dev.vivienhuang.mavenwebdemo.linebot.webhook.EventModel;
 import dev.vivienhuang.mavenwebdemo.linebot.webhook.WebhookModel;
+import dev.vivienhuang.mavenwebdemo.service.chat.IChatKeyWordService;
 import dev.vivienhuang.mavenwebdemo.service.log.ILineWebhookLogService;
 
 @RestController
@@ -40,6 +42,9 @@ import dev.vivienhuang.mavenwebdemo.service.log.ILineWebhookLogService;
 public class MessageRestController {
 	@Autowired 
 	ILineWebhookLogService lineWebhookLogService;
+	
+	@Autowired
+	IChatKeyWordService chatKeyWordService;
 	
 	@PostMapping("/bot_message")
     public String test3(@RequestBody String message) {
@@ -74,9 +79,18 @@ public class MessageRestController {
 			
 			
 			for(EventModel lineEvent : webhookModel.getEvents()) { 	
-				if(lineEvent.getType().equals("message") && lineEvent.getMessage().getType().equals("text")) {
+				if(lineEvent.getType().equals("message")) {
+					String replyMessage = lineEvent.getMessage().getText();
+
+					BasicDBMessageVO basicDBMessageVO = chatKeyWordService.getKeyWord(replyMessage, lineEvent.getSource().getUserId());
+					int code =  basicDBMessageVO.getCode();
+					System.out.println("basicDBMessageVO.getCode(): " + basicDBMessageVO.getCode());
+					
+					if (code == 1) {
+						replyMessage = basicDBMessageVO.getMessage();
+					}
 					List<MessageModel> messageModels = new ArrayList<>();
-					messageModels.add(new MessageModel("text", lineEvent.getMessage().getText()));
+					messageModels.add(new MessageModel("text", replyMessage));
 					sendReplyMessage(new ReplyMessageModel(lineEvent.getReplyToken(), messageModels));
 				}
 				
@@ -117,8 +131,17 @@ public class MessageRestController {
 		
 		for(EventModel lineEvent : message.getEvents()) { 	
 			if(lineEvent.getType().equals("message")) {
+				String replyMessage = lineEvent.getMessage().getText();
+
+				BasicDBMessageVO basicDBMessageVO = chatKeyWordService.getKeyWord(replyMessage, lineEvent.getSource().getUserId());
+				int code =  basicDBMessageVO.getCode();
+				System.out.println("basicDBMessageVO.getCode(): " + basicDBMessageVO.getCode());
+				
+				if (code == 1) {
+					replyMessage = basicDBMessageVO.getMessage();
+				}
 				List<MessageModel> messageModels = new ArrayList<>();
-				messageModels.add(new MessageModel("text", lineEvent.getMessage().getText()));
+				messageModels.add(new MessageModel("text", replyMessage));
 				sendReplyMessage(new ReplyMessageModel(lineEvent.getReplyToken(), messageModels));
 			}
 			
