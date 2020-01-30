@@ -1,6 +1,7 @@
 package dev.vivienhuang.mavenwebdemo.rest;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -12,39 +13,56 @@ import javax.servlet.http.HttpServletRequest;
 import javax.sound.sampled.LineEvent;
 
 import org.apache.commons.io.IOUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriUtils;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dev.vivienhuang.mavenwebdemo.entity.BasicDBMessageVO;
+import dev.vivienhuang.mavenwebdemo.entity.LineBotVO;
+import dev.vivienhuang.mavenwebdemo.entity.LineMemberVO;
 import dev.vivienhuang.mavenwebdemo.entity.LineWebhookLogVO;
 import dev.vivienhuang.mavenwebdemo.linebot.message.MessageModel;
 import dev.vivienhuang.mavenwebdemo.linebot.message.ReplyMessageModel;
 import dev.vivienhuang.mavenwebdemo.linebot.webhook.EventModel;
 import dev.vivienhuang.mavenwebdemo.linebot.webhook.WebhookModel;
 import dev.vivienhuang.mavenwebdemo.service.chat.IChatKeyWordService;
+import dev.vivienhuang.mavenwebdemo.service.line_member.ILineMemberService;
+import dev.vivienhuang.mavenwebdemo.service.line_member.LineMemberService;
+import dev.vivienhuang.mavenwebdemo.service.linebot.ILineBotService;
 import dev.vivienhuang.mavenwebdemo.service.log.ILineWebhookLogService;
 
 @RestController
-@RequestMapping("/api/message")
+@RequestMapping(value = "/api/message", produces = { "application/json;charset=UTF-8"})
 public class MessageRestController {
 	@Autowired 
 	ILineWebhookLogService lineWebhookLogService;
 	
 	@Autowired
 	IChatKeyWordService chatKeyWordService;
+	
+	@Autowired
+	ILineBotService lineBotService;
+	
+	@Autowired
+	ILineMemberService lineMemberService;
 	
 	@PostMapping("/bot_message")
     public String test3(@RequestBody String message) {
@@ -77,14 +95,30 @@ public class MessageRestController {
 			ObjectMapper objectMapper = new ObjectMapper();
 			WebhookModel webhookModel = objectMapper.readValue(body, WebhookModel.class);
 			
+		 	LineBotVO lineBotVO = lineBotService.getLineBot(webhookModel.getDestination());
 			
 			for(EventModel lineEvent : webhookModel.getEvents()) { 	
+				
+				// todo check member 
+				JSONObject jsonObject = new JSONObject(getLineMemberProfile(lineEvent.getSource().getUserId()));
+				LineMemberVO lineMemberVO  = new LineMemberVO();
+				lineMemberVO.setLineId(jsonObject.getString("userId"));
+				lineMemberVO.setLineName(jsonObject.getString("displayName"));
+				lineMemberVO.setLinePicture(jsonObject.getString("pictureUrl"));
+				lineMemberVO.setBotId(lineBotVO.getBotId());
+				lineMemberVO.setCreateDate(new java.sql.Timestamp(System.currentTimeMillis()));
+				lineMemberVO.setMemberStatus(1);
+				lineMemberService.createLineMember(lineMemberVO);
+				
+				
 				if(lineEvent.getType().equals("message")) {
 					String replyMessage = lineEvent.getMessage().getText();
 
 					BasicDBMessageVO basicDBMessageVO = chatKeyWordService.getKeyWord(replyMessage, lineEvent.getSource().getUserId());
 					int code =  basicDBMessageVO.getCode();
 					System.out.println("basicDBMessageVO.getCode(): " + basicDBMessageVO.getCode());
+					
+					
 					
 					if (code == 1) {
 						replyMessage = basicDBMessageVO.getMessage();
@@ -95,6 +129,9 @@ public class MessageRestController {
 				}
 				
 			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -182,5 +219,35 @@ public class MessageRestController {
 	    ResponseEntity<String> response = restTemplate.postForEntity( REPLY_MESSAGE_URL, request , String.class );
 	    System.out.println(response.getBody());
 	}
+	
+	private final String GET_MEMBER_PROFILE_URL = "https://api.line.me/v2/bot/profile/";
 
+	@GetMapping("/memberInfo")
+    public String getMemberInfo(String lineId) {
+		System.out.println("LineId : " + lineId);
+        return getLineMemberProfile(lineId);
+    }
+	
+	private String getLineMemberProfile(String lineId) {
+		String url = GET_MEMBER_PROFILE_URL + lineId;
+		RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());	    
+		restTemplate.getMessageConverters().set(1, 
+				new StringHttpMessageConverter(StandardCharsets.UTF_8));
+		
+		HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        headers.add("Authorization", String.format("%s %s", "Bearer", CHANNEL_ACCESS_TOKEN));
+		
+	    HttpEntity<String> request = new HttpEntity<String>(headers);
+	    ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request , String.class );
+//	    System.out.println(response.getBody());
+	    System.out.println("response.getBody() : " + response.getBody());
+	    
+//	    System.out.println("StringUtil.conventFromGzip(response.getBody()) : " + StringUtil.conventFromGzip(response.getBody()));
+//
+//	    StringUtil.conventFromGzip
+//	    String decodedResult = UriUtils.decode(response.getBody(),"UTF-8");
+
+	    return  response.getBody();
+	}
 }

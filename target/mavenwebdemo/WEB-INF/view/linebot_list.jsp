@@ -53,6 +53,8 @@
 					<th>UpdateDate</th>
 					<th>Update</th>
 					<th>Delete</th>
+					<th>Members</th>
+					
 				</tr>
 				
 				<c:forEach var="lineBotItem" items="${lineBots}">
@@ -61,6 +63,10 @@
 					</c:url>
 					
 					<c:url var="deleteLink" value="/linebotDelete">
+						<c:param name="botId" value="${lineBotItem.botId}" />
+					</c:url> 
+					
+					<c:url var="membersLink" value="/linebotMembers">
 						<c:param name="botId" value="${lineBotItem.botId}" />
 					</c:url>  
 		
@@ -75,6 +81,7 @@
 						<td>${lineBotItem.updateDate}</td>
 						<td><a href="${dateilLink}">修改</a></td>				
 						<td><a href="${deleteLink}">刪除</a></td>	
+						<td><a href="${membersLink}">會員</a></td>	
 							
 					</tr>
 				</c:forEach>

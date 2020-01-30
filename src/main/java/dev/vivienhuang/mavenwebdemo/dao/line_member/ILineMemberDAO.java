@@ -10,4 +10,5 @@ public interface ILineMemberDAO {
 	public List<LineMemberVO> getLineMembers();
 	public void updateLineMember(LineMemberVO lineMemberVO);
 	public void deleteLineMember(String lineId);
+	public List<LineMemberVO> getLineMembersByBotId(int botId);
 }

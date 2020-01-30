@@ -12,3 +12,54 @@
  )
  GO
  
+-- =====================LineMemberGet=======================
+  
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		vivien
+-- Create date: 20200122
+-- Description:	<Description,,>
+-- exec LineMemberGet '@lineId', '@lineName', '@lineId', '@botId'
+-- =============================================
+CREATE PROCEDURE [dbo].[LineMemberGet]
+	@lineId varchar(50),
+	@lineName nvarchar(50),
+	@linePicture varchar(200),
+	@botId int
+	
+	
+
+AS
+BEGIN
+	SET NOCOUNT ON;	
+    DECLARE @existLineId VARCHAR(50)
+
+    SELECT TOP (1) @existLineId = [LineId] 
+        FROM [dbo].[LineMember] where [LineId] = @lineId and [BotId] = @botId
+
+	if @existLineId is null
+	begin
+        INSERT INTO [dbo].[LineMember]
+                ([LineId]
+                ,[LineName]
+                ,[LinePicture]
+                ,[BotId]
+                ,[MemberStatus]
+                ,[CreateDate])
+        VALUES(@lineId, @lineName, @linePicture, @botId, 1, GETDATE())
+    end
+    
+    SELECT TOP (1) [LineId]
+	      ,[LineName]
+	      ,[LinePicture]
+	      ,[BotId]
+	      ,[MemberStatus]
+	      ,[CreateDate]
+	      ,[UpdateDate]
+	  FROM [dbo].[LineMember] where LineId = @lineId and BotId = @botId
+END
+
+GO

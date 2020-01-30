@@ -2,6 +2,9 @@ package dev.vivienhuang.mavenwebdemo.dao.line_member;
 
 import java.util.List;
 
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureQuery;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -53,5 +56,21 @@ public class LineMemberDAO implements ILineMemberDAO{
 		public void deleteLineMember(String lineId) {
 			Session session = sessionFactory.getCurrentSession();
 			session.delete(session.get( LineMemberVO.class, lineId));
+		}
+
+		@Override
+		public List<LineMemberVO> getLineMembersByBotId(int botId) {
+			Session session = sessionFactory.getCurrentSession();
+			System.out.println("botId : " + botId);
+			StoredProcedureQuery storedProcedure 
+				= session.createStoredProcedureQuery("LineMemberGetByBotId", LineMemberVO.class);
+			// set parameters
+			storedProcedure.registerStoredProcedureParameter("botId", Integer.class, ParameterMode.IN);		
+			storedProcedure.setParameter("botId", botId);
+			// execute SP
+			storedProcedure.execute();
+	        List<LineMemberVO> resultList = (List<LineMemberVO>) storedProcedure.getResultList();
+	
+			return resultList;
 		}
 }

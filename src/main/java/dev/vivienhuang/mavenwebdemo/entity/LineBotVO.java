@@ -25,6 +25,9 @@ public class LineBotVO {
 	@Column(name="BotId")
 	private Integer botId;
 
+	@Column(name="Destination")
+	private String destination;
+	
 	@Column(name="Token")
 	private String token;
 	
@@ -53,6 +56,13 @@ public class LineBotVO {
 	
 	public LineBotVO() {
 		super();
+	}
+
+	public LineBotVO(String destination, String type, Timestamp createDate) {
+		super();
+		this.destination = destination;
+		this.type = type;
+		this.createDate = createDate;
 	}
 
 	public LineBotVO(String token, String secret, String displayName, String type, Timestamp createDate) {

@@ -26,6 +26,12 @@ public class LineBotService implements ILineBotService {
 	public LineBotVO getLineBot(int botId) {
 		return lineBotDAO.getLineBot(botId);
 	}
+	
+	@Override
+	@Transactional
+	public LineBotVO getLineBot(String destination) {
+		return lineBotDAO.getLineBot(destination);
+	}
 
 	@Override
 	@Transactional

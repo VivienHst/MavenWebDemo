@@ -57,6 +57,8 @@
 				</table>
 				<form:input type="hidden" path="botId" value="${linebot.botId}"/>
 				<form:input type="hidden" path="createDate" value="${linebot.createDate}"/>
+				<form:input type="hidden" path="destination" value="${linebot.destination}"/>
+				
 				<input type="submit" value="更新">
 				
 			</form:form>

@@ -1,6 +1,8 @@
 package dev.vivienhuang.mavenwebdemo.controller;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,7 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import dev.vivienhuang.mavenwebdemo.entity.LineBotVO;
+import dev.vivienhuang.mavenwebdemo.entity.LineMemberVO;
 import dev.vivienhuang.mavenwebdemo.entity.SkillVO;
+import dev.vivienhuang.mavenwebdemo.service.line_member.ILineMemberService;
 import dev.vivienhuang.mavenwebdemo.service.linebot.ILineBotService;
 
 @Controller
@@ -19,6 +23,9 @@ public class LineBotController {
 
 	@Autowired
 	ILineBotService lineBotService;
+	
+	@Autowired
+	ILineMemberService lineMemberService;
 	
 	@GetMapping("/linebot")
 	public String getLineBotPage(Model model) {
@@ -50,6 +57,20 @@ public class LineBotController {
             System.out.print(skillVO.toString());
 		}
   		return "linebot_update";
+	}
+	
+	@GetMapping("/linebotMembers")
+	public String getLinebotMembersPage(@RequestParam("botId")int botId, 
+			Model model) {
+		
+		LineBotVO lineBotVO = lineBotService.getLineBot(botId);
+		model.addAttribute("linebot", lineBotVO);
+		
+		List<LineMemberVO> lineMemberVOs = new ArrayList<LineMemberVO>();
+		lineMemberVOs = lineMemberService.getLineMembersByBotId(botId);
+		model.addAttribute("linemembers", lineMemberVOs);
+
+  		return "linebot_members";
 	}
 	
 	@PostMapping("/linebotUpdate")

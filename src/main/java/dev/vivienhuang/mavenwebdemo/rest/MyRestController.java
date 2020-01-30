@@ -9,16 +9,23 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import dev.vivienhuang.mavenwebdemo.service.linebot.ILineBotService;
+
 @RestController
 @RequestMapping("/api")
 public class MyRestController {
+	
+	@Autowired
+	ILineBotService lineBotService;
 	
 	private List<String> students;
 	private final String UPLOAD_DIRECTORY = "/images/";
@@ -44,7 +51,13 @@ public class MyRestController {
 //	  
 	    return "name : " + name;
 	}
-	              
+	
+	@GetMapping("/test")
+	public String getTest(String testText){
+		return lineBotService.getLineBot(testText).toString();
+	}
+	
+	
 	@PostMapping("/students")
 	public List<String> getPostStudents(){
 		return students;

@@ -1,9 +1,17 @@
+drop table LineBot_Skill
+	
+drop table LineMember
+drop table Skill
+	
+drop table LineBot
+	
 	
 create table LineBot(
     BotId int not null IDENTITY(1,1),
-    Token varchar(100) not null,
-    Secret varchar(60) not null,
-    DisplayName NVARCHAR(20) not null,
+    Destination varchar(100) not null,
+    Token varchar(100) null,
+    Secret varchar(60) null,
+    DisplayName NVARCHAR(20) null,
     Type varchar(10) not null,
     CreateDate datetime not null,
     UpdateDate datetime,
@@ -23,6 +31,18 @@ create table LineBot_Skill (
     CONSTRAINT LINEBOT_SKILL_PK PRIMARY KEY (BotId, SkillId)
 )
 
+ Create table LineMember(
+     LineId varchar(50) not null,
+     LineName nvarchar(50) null,
+     LinePicture nvarchar(200)  null,
+     BotId int not null,
+     MemberStatus [int] not null,
+     CreateDate datetime not null,
+     UpdateDate datetime null,
+    constraint LINE_MEMBER_UID_PK PRIMARY KEY(LineId)
+    CONSTRAINT LINE_MEMBER_BOTID_FK FOREIGN KEY (BotId) REFERENCES LineBot (BotId),
+    
+ )
 
 SELECT LineBot.BotId, LineBot.DisplayName, LineBot.Token, Skill.SkillName
   FROM LineBot
@@ -31,3 +51,48 @@ LEFT OUTER JOIN LineBot_Skill
  AND LineBot.BotId= 1
 LEFT OUTER JOIN Skill
   ON LineBot_Skill.SkillId = Skill.SkillId
+  
+  
+-- =====================LineBotGetByDestination=======================
+  
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		vivien
+-- Create date: 20200121
+-- Description:	<Description,,>
+-- exec LineBotGetByDestination '@destination'
+-- =============================================
+CREATE PROCEDURE [dbo].[LineBotGetByDestination]
+	@destination varchar(50)
+AS
+BEGIN
+	SET NOCOUNT ON;	
+    declare @botId int
+
+    SELECT TOP (1) @botId = [BotId] 
+        FROM [dbo].[LineBot] where Destination = @destination
+
+	if @BotId is null
+	begin
+        INSERT INTO [dbo].[LineBot]
+                ([Destination]
+                ,[Type]
+                ,[CreateDate])
+        VALUES(@destination, 'unknow', GETDATE())
+    end
+    
+    SELECT TOP (1) [BotId]
+                ,[Destination]
+                ,[Token]
+                ,[Secret]
+                ,[DisplayName]
+                ,[Type]
+                ,[CreateDate]
+                ,[UpdateDate]
+        FROM [dbo].[LineBot] where Destination = @destination
+END
+
+GO

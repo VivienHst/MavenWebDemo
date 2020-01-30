@@ -45,4 +45,10 @@ public class LineMemberService implements ILineMemberService {
 		lineMemberDAO.deleteLineMember(lineId);
 	}
 
+	@Override
+	@Transactional
+	public List<LineMemberVO> getLineMembersByBotId(int botId) {
+		return lineMemberDAO.getLineMembersByBotId(botId);
+	}
+
 }

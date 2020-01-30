@@ -2,6 +2,9 @@ package dev.vivienhuang.mavenwebdemo.dao.linebot;
 
 import java.util.List;
 
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureQuery;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -21,6 +24,22 @@ public class LineBotDAO implements ILineBotDAO{
 		Session session = sessionFactory.getCurrentSession();
 		session.save(lineBotVO);
 		
+	}
+	
+	@Override
+	public LineBotVO getLineBot(String destination) {
+		Session session = sessionFactory.getCurrentSession();
+		System.out.println("destination : " + destination);
+		StoredProcedureQuery storedProcedure 
+			= session.createStoredProcedureQuery("LineBotGetByDestination", LineBotVO.class);
+		// set parameters
+		storedProcedure.registerStoredProcedureParameter("destination", String.class, ParameterMode.IN);		
+		storedProcedure.setParameter("destination", destination);
+		// execute SP
+		storedProcedure.execute();
+        List<LineBotVO> resultQuery = (List<LineBotVO>) storedProcedure.getResultList();
+      
+		return resultQuery.get(0);
 	}
 
 	@Override
