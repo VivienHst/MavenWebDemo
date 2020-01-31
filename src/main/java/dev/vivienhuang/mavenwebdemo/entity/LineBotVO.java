@@ -34,6 +34,9 @@ public class LineBotVO {
 	@Column(name="Secret")
 	private String secret;
 	
+	@Column(name="BotUid")
+	private String botUid;
+	
 	@Column(name="DisplayName")
 	private String displayName ;
 	
@@ -96,6 +99,22 @@ public class LineBotVO {
 
 	public void setSecret(String secret) {
 		this.secret = secret;
+	}
+
+	public String getDestination() {
+		return destination;
+	}
+
+	public void setDestination(String destination) {
+		this.destination = destination;
+	}
+
+	public String getBotUid() {
+		return botUid;
+	}
+
+	public void setBotUid(String botUid) {
+		this.botUid = botUid;
 	}
 
 	public String getDisplayName() {

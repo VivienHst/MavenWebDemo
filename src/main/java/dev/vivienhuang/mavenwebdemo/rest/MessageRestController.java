@@ -86,9 +86,17 @@ public class MessageRestController {
 		try {
 			body =  IOUtils.toString(request.getReader());
 			returnValue.put("body", body);
+			
+			String destination = "";
+			try {
+				destination = new JSONObject(body).getString("destination");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			
 			lineWebhookLogService.createLineWebhookLog(
 					new LineWebhookLogVO(
-							new JSONObject(body).getString("destination"),
+							destination,
 							body, 
 							new java.sql.Timestamp(System.currentTimeMillis()))
 					);
@@ -100,7 +108,7 @@ public class MessageRestController {
 			for(EventModel lineEvent : webhookModel.getEvents()) { 	
 				
 				// todo check member 
-				JSONObject jsonObject = new JSONObject(getLineMemberProfile(lineEvent.getSource().getUserId()));
+				JSONObject jsonObject = new JSONObject(getLineMemberProfile(lineEvent.getSource().getUserId(), lineBotVO.getToken()));
 				LineMemberVO lineMemberVO  = new LineMemberVO();
 				lineMemberVO.setLineId(jsonObject.getString("userId"));
 				lineMemberVO.setLineName(jsonObject.getString("displayName"));
@@ -110,7 +118,6 @@ public class MessageRestController {
 				lineMemberVO.setMemberStatus(1);
 				lineMemberService.createLineMember(lineMemberVO);
 				
-				
 				if(lineEvent.getType().equals("message")) {
 					String replyMessage = lineEvent.getMessage().getText();
 
@@ -118,14 +125,13 @@ public class MessageRestController {
 					int code =  basicDBMessageVO.getCode();
 					System.out.println("basicDBMessageVO.getCode(): " + basicDBMessageVO.getCode());
 					
-					
-					
 					if (code == 1) {
 						replyMessage = basicDBMessageVO.getMessage();
 					}
+					
 					List<MessageModel> messageModels = new ArrayList<>();
 					messageModels.add(new MessageModel("text", replyMessage));
-					sendReplyMessage(new ReplyMessageModel(lineEvent.getReplyToken(), messageModels));
+					sendReplyMessage(new ReplyMessageModel(lineEvent.getReplyToken(), messageModels), lineBotVO.getToken());
 				}
 				
 			}
@@ -179,7 +185,7 @@ public class MessageRestController {
 				}
 				List<MessageModel> messageModels = new ArrayList<>();
 				messageModels.add(new MessageModel("text", replyMessage));
-				sendReplyMessage(new ReplyMessageModel(lineEvent.getReplyToken(), messageModels));
+//				sendReplyMessage(new ReplyMessageModel(lineEvent.getReplyToken(), messageModels), lineBot);
 			}
 			
 		}
@@ -194,12 +200,12 @@ public class MessageRestController {
 	
 	private final String REPLY_MESSAGE_URL = "https://api.line.me/v2/bot/message/reply";
 	
-	private void sendReplyMessage(ReplyMessageModel replyMessageModel) {
+	private void sendReplyMessage(ReplyMessageModel replyMessageModel, String channelAccessToken) {
 
 	    RestTemplate restTemplate = new RestTemplate();	    
 	    HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        headers.add("Authorization", String.format("%s %s", "Bearer", CHANNEL_ACCESS_TOKEN));
+        headers.add("Authorization", String.format("%s %s", "Bearer", channelAccessToken));
 //	    MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 	    ObjectMapper Obj = new ObjectMapper(); 
 	    String jsonStr = "";
@@ -225,10 +231,10 @@ public class MessageRestController {
 	@GetMapping("/memberInfo")
     public String getMemberInfo(String lineId) {
 		System.out.println("LineId : " + lineId);
-        return getLineMemberProfile(lineId);
+        return getLineMemberProfile(lineId, CHANNEL_ACCESS_TOKEN);
     }
 	
-	private String getLineMemberProfile(String lineId) {
+	private String getLineMemberProfile(String lineId, String channelAccessToken) {
 		String url = GET_MEMBER_PROFILE_URL + lineId;
 		RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());	    
 		restTemplate.getMessageConverters().set(1, 
@@ -236,7 +242,7 @@ public class MessageRestController {
 		
 		HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        headers.add("Authorization", String.format("%s %s", "Bearer", CHANNEL_ACCESS_TOKEN));
+        headers.add("Authorization", String.format("%s %s", "Bearer", channelAccessToken));
 		
 	    HttpEntity<String> request = new HttpEntity<String>(headers);
 	    ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request , String.class );
