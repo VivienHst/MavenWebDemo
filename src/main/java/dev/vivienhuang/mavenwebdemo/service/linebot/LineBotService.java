@@ -51,4 +51,10 @@ public class LineBotService implements ILineBotService {
 		lineBotDAO.deleteLineBot(botId);
 	}
 
+	@Override
+	@Transactional
+	public LineBotVO getLineBotByMemberLineId(String lineId) {
+		return lineBotDAO.getLineBotByMemberLineId(lineId);
+	}
+
 }

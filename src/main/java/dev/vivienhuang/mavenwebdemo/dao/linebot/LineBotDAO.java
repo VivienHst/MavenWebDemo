@@ -69,4 +69,20 @@ public class LineBotDAO implements ILineBotDAO{
 		Session session = sessionFactory.getCurrentSession();
 		session.delete(session.get(LineBotVO.class, botId));
 	}
+
+	@Override
+	public LineBotVO getLineBotByMemberLineId(String lineId) {
+		Session session = sessionFactory.getCurrentSession();
+		System.out.println("lineId : " + lineId);
+		StoredProcedureQuery storedProcedure 
+			= session.createStoredProcedureQuery("LineBotGetByLineId", LineBotVO.class);
+		// set parameters
+		storedProcedure.registerStoredProcedureParameter("lineId", String.class, ParameterMode.IN);		
+		storedProcedure.setParameter("lineId", lineId);
+		// execute SP
+		storedProcedure.execute();
+        List<LineBotVO> resultQuery = (List<LineBotVO>) storedProcedure.getResultList();
+      
+		return resultQuery.get(0);
+	}
 }

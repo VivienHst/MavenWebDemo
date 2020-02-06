@@ -1,0 +1,48 @@
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		vivien
+-- Create date: 20200121
+-- Description:	<Description,,>
+-- exec LineBotGetByDestination '@destination'
+-- =============================================
+CREATE PROCEDURE [dbo].[LineBotGetByDestination]
+	@destination varchar(50)
+AS
+BEGIN
+	SET NOCOUNT ON;	
+    declare @botId int
+
+    SELECT TOP (1) @botId = [BotId] 
+        FROM [dbo].[LineBot] where Destination = @destination
+
+	if @BotId is null
+	begin
+        INSERT INTO [dbo].[LineBot]
+                ([Destination]
+                ,[Type]
+                ,[CreateDate])
+        VALUES(@destination, 'unknow', GETDATE())
+    end
+    
+    SELECT TOP (1) [BotId]
+                ,[Destination]
+                ,[Token]
+                ,[Secret]
+                ,[DisplayName]
+                ,[BotUid]
+                ,[Type]
+                ,[CreateDate]
+                ,[UpdateDate]
+        FROM [dbo].[LineBot] where Destination = @destination
+END
+
+GO
+
+exec LineBotGetByDestination 'ttttest'
+
+select * from LineBot
+
+update LineBot set DisplayName = Destination

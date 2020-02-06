@@ -12,4 +12,6 @@ public interface ILineBotDAO {
 	public List<LineBotVO> getLineBots();
 	public void updateLineBot(LineBotVO lineBotVO);
 	public void deleteLineBot(int botId);
+	public LineBotVO getLineBotByMemberLineId(String lineId);
+
 }

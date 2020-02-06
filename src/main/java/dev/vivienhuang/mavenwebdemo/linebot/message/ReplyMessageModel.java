@@ -22,8 +22,6 @@ public class ReplyMessageModel {
 	
 	private List<MessageModel> messages;
 	
-	
-	
 	public ReplyMessageModel(String replyToken, List<MessageModel> messages) {
 		super();
 		this.replyToken = replyToken;

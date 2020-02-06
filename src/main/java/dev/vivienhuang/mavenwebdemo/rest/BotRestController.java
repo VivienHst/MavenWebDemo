@@ -71,7 +71,7 @@ public class BotRestController {
 		if(chat.equals("test")) {
 			sendTestRequest();
 		} else {
-			sendMessageToLineUser(myLineId, chat);
+			sendMessageToLineUser(myLineId, chat, CHANNEL_ACCESS_TOKEN);
 //			sendLineMessage2(chat, myLineId);
 
 		}
@@ -134,7 +134,7 @@ public class BotRestController {
     private String myLineId = "U21428619758440bf95597dd80152a808";
 
     
-	private void sendMessageToLineUser(String userId, String message) {
+	private void sendMessageToLineUser(String userId, String message, String channelAccessToken) {
 		TextMessage textMessage = new TextMessage(message);
 		MessagePayload messagePayload = new MessagePayload();
 		messagePayload.setTo(userId);
@@ -147,7 +147,7 @@ public class BotRestController {
 	    RestTemplate restTemplate = new RestTemplate();	    
 	    HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        headers.add("Authorization", String.format("%s %s", "Bearer", CHANNEL_ACCESS_TOKEN));
+        headers.add("Authorization", String.format("%s %s", "Bearer", channelAccessToken));
 //	    MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 	    ObjectMapper Obj = new ObjectMapper(); 
 	    String jsonStr = "";

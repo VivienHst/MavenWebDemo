@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import dev.vivienhuang.mavenwebdemo.entity.linemessage.ImageMessage;
 import dev.vivienhuang.mavenwebdemo.entity.linemessage.LineMessage;
 import dev.vivienhuang.mavenwebdemo.entity.linemessage.MessagePayload;
 import dev.vivienhuang.mavenwebdemo.entity.linemessage.TextMessage;
@@ -46,7 +47,6 @@ public class MessageSkill implements IMessageSkill {
             System.out.println(jsonStr); 
         } catch (IOException e) { 
             System.out.println(e.getMessage()); 
-
             e.printStackTrace(); 
         } 
 	  
@@ -55,6 +55,15 @@ public class MessageSkill implements IMessageSkill {
 
 	    ResponseEntity<String> response = restTemplate.postForEntity( url, request , String.class );
 	    System.out.println(response.getBody());
+	}
+
+
+	@Override
+	public void sendImageMessage(String userId, String url, String channelAccessToken) {
+		ImageMessage imageMessage = new ImageMessage( url, url);
+		List<LineMessage> messages = new ArrayList<LineMessage>();
+		messages.add(imageMessage);
+		sendLineMessage(userId, messages, channelAccessToken);		
 	}
 
 }

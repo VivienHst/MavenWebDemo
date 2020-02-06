@@ -2,6 +2,7 @@
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/service/member/IMemberService.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/service/linebot/ILineBotService.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/service/skill/ISkillService.java
+/Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/linebot/skill/MessageSkill.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/dao/linebot/ILineBotDAO.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/config/MySecurityConfig.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/entity/LineWebhookLogVO.java
@@ -27,7 +28,9 @@
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/service/log/ILineWebhookLogService.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/config/MySecurityWebApplicationInitializer.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/dao/chat/ChatKeyWordDAO.java
+/Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/linebot/skill/IBaseSkill.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/linebot/message/MessageModel.java
+/Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/linebot/skill/IMessageSkill.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/entity/ChatKeyWordVO.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/dao/member/IMemberPermissionDAO.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/dao/log/LineWebhookLogDAO.java
@@ -35,10 +38,13 @@
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/service/log/LineWebhookLogService.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/entity/linemessage/TextMessage.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/service/chat/IChatKeyWordService.java
+/Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/controller/MessageController.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/service/member/MemberService.java
+/Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/service/cache/LineBotCacheService.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/config/MyAppConfig.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/rest/MyRestController.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/dao/line_member/LineMemberDAO.java
+/Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/service/cache/ILineBotCacheService.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/dao/member/IMemberDAO.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/service/line_member/ILineMemberService.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/entity/LineBotVO.java
@@ -52,6 +58,7 @@
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/controller/HomeController.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/service/member/IMemberPermissionService.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/service/chat/ChatKeyWordService.java
+/Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/util/image/ImageUploadUtil.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/entity/BasicDBMessageVO.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/dao/member/IPermissionDAO.java
 /Users/vivienhuang/Documents/Spring/bot_work/maven_demo/src/main/java/dev/vivienhuang/mavenwebdemo/dao/member/MemberDAO.java

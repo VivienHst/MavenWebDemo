@@ -8,10 +8,11 @@ drop table LineBot
 	
 create table LineBot(
     BotId int not null IDENTITY(1,1),
-    Destination varchar(100) not null,
-    Token varchar(100) null,
+    Destination varchar(100) null,
+    Token varchar(200) null,
     Secret varchar(60) null,
     DisplayName NVARCHAR(20) null,
+    BotUid VARCHAR(60) null,
     Type varchar(10) not null,
     CreateDate datetime not null,
     UpdateDate datetime,

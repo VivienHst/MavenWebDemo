@@ -29,6 +29,7 @@
 					<th>LinePicture</th>
 					<th>MemberStatus</th>
 					<th>CreateDate</th>
+					<th>SendMessage</th>
 					
 				</tr>
 				
@@ -37,10 +38,14 @@
 					<tr>
 						<td>${linemember.lineId}</td>
 						<td>${linemember.lineName}</td>
-						<td>${linemember.linePicture}</td>
+						<td>
+		                	<img src="${linemember.linePicture}" width=100 height=100/>
+						</td>
 						<td>${linemember.memberStatus}</td>
 						<td>${linemember.createDate}</td>
-						
+						<td>
+							<a href="${pageContext.request.contextPath}/message?lineId=${linemember.lineId}">message</a>	
+						</td>
 							
 					</tr>
 				</c:forEach>

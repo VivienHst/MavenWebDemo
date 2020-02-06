@@ -130,6 +130,8 @@ public class MessageRestController {
 					}
 					
 					List<MessageModel> messageModels = new ArrayList<>();
+					messageModels.add(new MessageModel("text", lineMemberVO.getLineName() + "說："));
+
 					messageModels.add(new MessageModel("text", replyMessage));
 					sendReplyMessage(new ReplyMessageModel(lineEvent.getReplyToken(), messageModels), lineBotVO.getToken());
 				}

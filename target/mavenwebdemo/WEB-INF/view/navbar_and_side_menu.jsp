@@ -27,6 +27,8 @@
 			<li><a href="${pageContext.request.contextPath}/linebot">Bot</a></li>	
 			<li><a href="${pageContext.request.contextPath}/skill">Skill</a></li>												
 			<li><a href="${pageContext.request.contextPath}/member">Member</a></li>
+			<li><a href="${pageContext.request.contextPath}/message">Message</a></li>
+			
 			<li><a href="#">Services</a></li>
 
 		</ul>
@@ -38,6 +40,7 @@
 		<a href="${pageContext.request.contextPath}/linebot">Bot</a>
 		<a href="${pageContext.request.contextPath}/skill">Skill</a>
 		<a href="${pageContext.request.contextPath}/member">Member</a>
+		<a href="${pageContext.request.contextPath}/message">Message</a>		
 		<a href="#">Services</a>
 		
 	</div>
