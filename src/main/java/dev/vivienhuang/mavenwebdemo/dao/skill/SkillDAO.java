@@ -49,4 +49,10 @@ public class SkillDAO implements ISkillDAO {
 		session.delete(session.get(SkillVO.class, skillId));
 	}
 
+	@Override
+	public SkillVO getBotSkill(int botId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

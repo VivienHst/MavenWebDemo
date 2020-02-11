@@ -9,4 +9,5 @@ public interface ISkillDAO {
 	public SkillVO getSkill(int skillId);
 	public void upadteSkill(SkillVO skillVO);
 	public void deleteSkill(int skillId);
+	public SkillVO getBotSkill(int botId);
 }

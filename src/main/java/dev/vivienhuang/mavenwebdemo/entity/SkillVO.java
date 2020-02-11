@@ -41,7 +41,7 @@ public class SkillVO implements Serializable{
 	@Column(name="SkillDesc")
 	private String skillDesc;
 	
-	@ManyToMany(mappedBy = "skills", fetch = FetchType.LAZY)
+	@ManyToMany(mappedBy = "skills", fetch = FetchType.EAGER)
 	@JsonIgnore
 	private Set<LineBotVO> linebots = new HashSet<>();
 	
