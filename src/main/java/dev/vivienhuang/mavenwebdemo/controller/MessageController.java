@@ -94,30 +94,6 @@ public class MessageController {
 //		String imageTitle = model.
 		System.out.println("imageTitle : " + imageTitle);
 		model.addAttribute("imageTitle", imageTitle);
-		
-//		if(imageFiles!=null && imageFiles.length > 0) {
-//			for (MultipartFile file : imageFiles) {
-//	            if (file.isEmpty()) {
-//	                continue; //繼續下一個檔案
-//	            }
-//	            byte[] bytes;
-//				try {
-//					bytes = file.getBytes();
-//			    	String clientId = "ce2eb2637b4abc0"; //設定自己的 Clinet ID
-////		            Path path = Paths.get("/Users/9suser/Downloads/image002.jpg");
-//		            byte[] encoded = Base64.getEncoder().encode(bytes);
-//		            ImageUploadUtil imageUploadUtil = new ImageUploadUtil();
-//		            String imageUrl = imageUploadUtil.imgurUploadToImgur(clientId, imageTitle, new String(encoded));
-//		            
-//		            
-//		            System.out.println("imageUrl : " + imageUrl);
-////		            Files.write(path, bytes);
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//	        }
-//		}
 		String imageUrl = uploadImageFiles(imageTitle, imageFiles);
         model.addAttribute("imageUrl", imageUrl);
 

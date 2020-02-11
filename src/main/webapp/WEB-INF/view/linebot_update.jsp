@@ -23,24 +23,24 @@
 					<tbody>
 						<tr>
 							<td>Token : </td>
-							<td><form:input path="token" value="${linebot.token}"/></td>
+							<td><form:input path="lineBotVO.token" value="${linebot.lineBotVO.token}"/></td>
 						</tr>
 						<tr>	
 							<td>Secret : </td>
-							<td><form:input path="secret" value="${linebot.secret}"/></td>
+							<td><form:input path="lineBotVO.secret" value="${linebot.lineBotVO.secret}"/></td>
 						</tr>
 						<tr>
 							<td>DisplayName : </td>
-							<td><form:input path="displayName" value="${linebot.displayName}"/></td>
+							<td><form:input path="lineBotVO.displayName" value="${linebot.lineBotVO.displayName}"/></td>
 						</tr>
 						<tr>	
 							<td>Type : </td>
-							<td><form:input path="type" value="${linebot.type}"/></td>
+							<td><form:input path="lineBotVO.type" value="${linebot.lineBotVO.type}"/></td>
 						</tr>
 						
 						<tr>	
 							<td>Skill : </td>
-							<td>
+							<%-- <td>
 								<table>
 									<c:forEach var="skill" items="${linebot.skills}">
 										<tr>	
@@ -51,13 +51,31 @@
 									</c:forEach>
 								</table>
 								
-							</td>					
+							</td>	 --%>				
 						</tr>
+						<tr>
+							<td>
+								<%-- <form:checkboxes path="skills" items="${linebot.skills}"
+									itemLabel="skillName" /> --%>
+							
+								<c:forEach items="${linebot.lineBotVO.skills}" var="skill"  >	
+				                	<form:checkbox  path="botSkills" value="${skill.skillId}" 
+				                		label="${skill.skillName}" checked="checked"/>	</br>			                	
+						        </c:forEach>
+							
+							   <c:forEach items="${linebot.unUsedSkills}" var="skill"  >
+				                	<form:checkbox  path="botSkills" value="${skill.skillId}" 
+				                		label="${skill.skillName}" />	</br>		                	
+						        </c:forEach>
+    						</td>
+					        
+						</tr>
+						
 					</tbody>
 				</table>
-				<form:input type="hidden" path="botId" value="${linebot.botId}"/>
-				<form:input type="hidden" path="createDate" value="${linebot.createDate}"/>
-				<form:input type="hidden" path="destination" value="${linebot.destination}"/>
+				<form:input type="hidden" path="lineBotVO.botId" value="${linebot.lineBotVO.botId}"/>
+				<form:input type="hidden" path="lineBotVO.createDate" value="${linebot.lineBotVO.createDate}"/>
+				<form:input type="hidden" path="lineBotVO.destination" value="${linebot.lineBotVO.destination}"/>
 				
 				<input type="submit" value="更新">
 				

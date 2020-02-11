@@ -1,5 +1,6 @@
 package dev.vivienhuang.mavenwebdemo.entity;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,10 +14,12 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Entity
 @Table(name="Skill")
-public class SkillVO {
+public class SkillVO implements Serializable{
 	/*
 	 * create table Skill (
 	    SkillId               int NOT NULL  IDENTITY(1, 1),
@@ -83,9 +86,61 @@ public class SkillVO {
 	public void setLinebots(Set<LineBotVO> linebots) {
 		this.linebots = linebots;
 	}
+	
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((skillDesc == null) ? 0 : skillDesc.hashCode());
+		result = prime * result + ((skillId == null) ? 0 : skillId.hashCode());
+		result = prime * result + ((skillName == null) ? 0 : skillName.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SkillVO other = (SkillVO) obj;
+	
+		if (skillDesc == null) {
+			if (other.skillDesc != null)
+				return false;
+		} else if (!skillDesc.equals(other.skillDesc))
+			return false;
+		if (skillId == null) {
+			if (other.skillId != null)
+				return false;
+		} else if (!skillId.equals(other.skillId))
+			return false;
+		if (skillName == null) {
+			if (other.skillName != null)
+				return false;
+		} else if (!skillName.equals(other.skillName))
+			return false;
+		return true;
+	}
 
 	@Override
 	public String toString() {
-		return "SkillVO [skillId=" + skillId + ", skillName=" + skillName + ", skillDesc=" + skillDesc + "]";
+		String jsonString = "";
+		ObjectMapper mapper = new ObjectMapper();		
+		// Java object to JSON string
+		try {
+			jsonString = mapper.writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		return jsonString;
+		
 	}
+
+	
+	
 }

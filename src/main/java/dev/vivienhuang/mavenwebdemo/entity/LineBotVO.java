@@ -2,6 +2,7 @@ package dev.vivienhuang.mavenwebdemo.entity;
 
 import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -153,8 +154,8 @@ public class LineBotVO {
 		return skills;
 	}
 
-	public void setSkills(Set<SkillVO> skills) {
-		this.skills = skills;
+	public void setSkills(Set<SkillVO> skillList) {
+		this.skills = skillList;
 	}
 
 	@Override

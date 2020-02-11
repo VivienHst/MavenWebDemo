@@ -1,8 +1,10 @@
 package dev.vivienhuang.mavenwebdemo.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import dev.vivienhuang.mavenwebdemo.entity.LineBotVO;
 import dev.vivienhuang.mavenwebdemo.entity.LineMemberVO;
 import dev.vivienhuang.mavenwebdemo.entity.SkillVO;
+import dev.vivienhuang.mavenwebdemo.entity.viewmodel.LineBotVM;
 import dev.vivienhuang.mavenwebdemo.service.line_member.ILineMemberService;
 import dev.vivienhuang.mavenwebdemo.service.linebot.ILineBotService;
+import dev.vivienhuang.mavenwebdemo.service.skill.ISkillService;
 
 @Controller
 public class LineBotController {
@@ -26,6 +30,9 @@ public class LineBotController {
 	
 	@Autowired
 	ILineMemberService lineMemberService;
+	
+	@Autowired
+	ISkillService skillService;
 	
 	@GetMapping("/linebot")
 	public String getLineBotPage(Model model) {
@@ -50,12 +57,25 @@ public class LineBotController {
 			Model model) {
 		
 		LineBotVO lineBotVO = lineBotService.getLineBot(botId);
-		model.addAttribute("linebot", lineBotVO);
-		
-		
-		for (SkillVO skillVO : lineBotVO.getSkills()) {
-            System.out.print(skillVO.toString());
+		List<SkillVO> skillList = skillService.getSkills();
+		Set<SkillVO> skillSet = new HashSet<SkillVO>();
+		for (SkillVO skillVO : skillList) {
+			skillSet.add(skillVO);
 		}
+			
+		for (SkillVO skillVO : lineBotVO.getSkills()) {
+			skillSet.remove(skillVO);
+		}
+		
+//		lineBotVO.setSkills(skillSet);
+		
+		
+		LineBotVM lineBotVM = new LineBotVM();
+		lineBotVM.setLineBotVO(lineBotVO);
+		lineBotVM.setUnUsedSkills(skillSet);
+		
+		model.addAttribute("linebot", lineBotVM);
+		
   		return "linebot_update";
 	}
 	
@@ -69,14 +89,26 @@ public class LineBotController {
 		List<LineMemberVO> lineMemberVOs = new ArrayList<LineMemberVO>();
 		lineMemberVOs = lineMemberService.getLineMembersByBotId(botId);
 		model.addAttribute("linemembers", lineMemberVOs);
-
+	
+	
   		return "linebot_members";
 	}
 	
 	@PostMapping("/linebotUpdate")
-	public String updateLinebotAction(@ModelAttribute("linebot")LineBotVO model) {
-		model.setUpdateDate(new java.sql.Timestamp(System.currentTimeMillis()));
-		lineBotService.updateLineBot(model);
+	public String updateLinebotAction(@ModelAttribute("linebot")LineBotVM model) {
+		System.out.println("updateLinebotAction");
+		
+		Set<SkillVO> skillVOs = new HashSet<SkillVO>();
+		
+		for (Integer skillId : model.getBotSkills()) {
+			System.out.println("getSkillId:" + skillId);
+			skillVOs.add(skillService.getSkill(skillId));			
+		}
+//		
+		LineBotVO lineBotVO = model.getLineBotVO();
+		lineBotVO.setSkills(skillVOs);
+		lineBotVO.setUpdateDate(new java.sql.Timestamp(System.currentTimeMillis()));
+		lineBotService.updateLineBot(lineBotVO);
 		return "redirect:/linebot";
 	}
 
