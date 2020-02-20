@@ -1,9 +1,7 @@
 package dev.vivienhuang.mavenwebdemo.controller;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
@@ -15,9 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import dev.vivienhuang.mavenwebdemo.entity.LineBotVO;
-import dev.vivienhuang.mavenwebdemo.entity.SkillVO;
-import dev.vivienhuang.mavenwebdemo.linebot.skill.IMessageSkill;
-import dev.vivienhuang.mavenwebdemo.linebot.skill.MessageSkill;
+import dev.vivienhuang.mavenwebdemo.entity.linemessage.LineMessage;
+import dev.vivienhuang.mavenwebdemo.linebot.message.action.ActionObject;
+import dev.vivienhuang.mavenwebdemo.linebot.message.action.MessageAction;
+import dev.vivienhuang.mavenwebdemo.linebot.message.action.PostbackAction;
+import dev.vivienhuang.mavenwebdemo.linebot.message.template.ButtonsTemplate;
+import dev.vivienhuang.mavenwebdemo.linebot.message.template.TemplateMessage;
+import dev.vivienhuang.mavenwebdemo.linebot.skill.IBaseSkill;
 import dev.vivienhuang.mavenwebdemo.service.linebot.ILineBotService;
 import dev.vivienhuang.mavenwebdemo.util.image.ImageUploadUtil;
 
@@ -29,6 +31,9 @@ public class MessageController {
 //	}
 	@Autowired
 	ILineBotService lineBotService;
+	
+	@Autowired
+ 	IBaseSkill baseSkill;
 	
 	@GetMapping("/message")
 	public String getOneMemberMessagePage(Model model, String lineId) {
@@ -54,6 +59,14 @@ public class MessageController {
 		return "message_image_message_add";
 	}
 	
+	@GetMapping("/newTemplateMessage")
+	public String addTemplateMessagePage(Model model, String lineId) {
+		System.out.println("LineId : " + lineId);
+		model.addAttribute("lineId", lineId);
+
+		return "message_template_message_add";
+	}
+	
 	@PostMapping("/sendTextMessage")
 	public String sendTextMessagePage(Model model, String lineId, String textMessage) {
 		
@@ -63,12 +76,46 @@ public class MessageController {
 		if(!lineId.isEmpty() && !textMessage.isEmpty()) {
 			LineBotVO lineBotVO = lineBotService.getLineBotByMemberLineId(lineId);
 			if(lineBotVO != null) {
-				IMessageSkill messageSkill = new MessageSkill();
-				messageSkill.sendTextMessage(lineId, textMessage, lineBotVO.getToken());
+				baseSkill.pushTextMessage(lineId, textMessage, lineBotVO.getToken());
 			}
 		}
 		return "message_add";
 	}
+	
+	@PostMapping("/sendTemplateMessage")
+	public String sendTemplateMessagePage(Model model, String lineId, String textMessage) {
+		
+		System.out.println("lineId : " + lineId);
+		System.out.println("textMessage : " + textMessage);
+		
+		List<ActionObject> actionObjects = new ArrayList<ActionObject>();
+		
+		MessageAction weatherAction = new MessageAction("天氣指令", "天氣");
+		PostbackAction keywordAction = new PostbackAction("關鍵字指令", "keywordSkill");
+		actionObjects.add(weatherAction);
+		actionObjects.add(keywordAction);
+		
+		ButtonsTemplate buttonsTemplates = new ButtonsTemplate();
+		buttonsTemplates.setText("可用指令");
+		buttonsTemplates.setActions(actionObjects);
+		
+		TemplateMessage templateMessage = new TemplateMessage();
+		
+		templateMessage.setAltText(textMessage);
+		templateMessage.setTemplate(buttonsTemplates);
+		
+		List<LineMessage> messages = new ArrayList<LineMessage>();
+
+		messages.add(templateMessage);
+		if(!lineId.isEmpty() && !textMessage.isEmpty()) {
+			LineBotVO lineBotVO = lineBotService.getLineBotByMemberLineId(lineId);
+			if(lineBotVO != null) {
+				baseSkill.sendPushMessage(lineId, messages, lineBotVO.getToken());
+			}
+		}
+		return "message_add";
+	}
+	
 	
 	@PostMapping("/sendImageMessage")
 	public String sendImageMessage(String lineId, MultipartFile[] imageFiles, Model model) {
@@ -78,11 +125,9 @@ public class MessageController {
 		if(!lineId.isEmpty() && !(imageFiles.length == 0)) {
 			LineBotVO lineBotVO = lineBotService.getLineBotByMemberLineId(lineId);
 			if(lineBotVO != null) {
-				IMessageSkill messageSkill = new MessageSkill();
 				String imageUrl = uploadImageFiles("image" + System.currentTimeMillis(), imageFiles);
-
 				if(!imageUrl.isEmpty()) {
-					messageSkill.sendImageMessage(lineId, imageUrl, lineBotVO.getToken());
+					baseSkill.pushImageMessage(lineId, imageUrl, lineBotVO.getToken());
 				}
 			}
 		}

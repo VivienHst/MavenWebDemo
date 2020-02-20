@@ -40,6 +40,7 @@ import dev.vivienhuang.mavenwebdemo.linebot.message.MessageModel;
 import dev.vivienhuang.mavenwebdemo.linebot.skill.IBaseSkill;
 import dev.vivienhuang.mavenwebdemo.linebot.skill.IMemberSkill;
 import dev.vivienhuang.mavenwebdemo.linebot.skill.IMessageSkill;
+import dev.vivienhuang.mavenwebdemo.linebot.skill.IWeatherSkill;
 import dev.vivienhuang.mavenwebdemo.linebot.webhook.EventModel;
 import dev.vivienhuang.mavenwebdemo.linebot.webhook.WebhookModel;
 import dev.vivienhuang.mavenwebdemo.service.chat.IChatKeyWordService;
@@ -74,6 +75,9 @@ public class MessageRestController {
 	
 	@Autowired
  	IMemberSkill memberSkill;
+
+	@Autowired
+	IWeatherSkill weatherSkill;
 	
 	@PostMapping("/bot_message")
     public String test3(@RequestBody String message) {
@@ -113,17 +117,18 @@ public class MessageRestController {
 		 		return "ok";
 		 	}
 
-
 			for(EventModel lineEvent : webhookModel.getEvents()) { 	
-				boolean isFinishEvent = false;
 				
+				if(baseSkill.dealMessage(lineBotVO, lineEvent)) {
+					continue;
+				}
+				
+				boolean isFinishEvent = false;	
 				LineMemberVO lineMemberVO = memberSkill.registerMember(lineBotVO, lineEvent);
-				
 				Set<SkillVO> botSkills = lineBotService.getLineBot(lineBotVO.getBotId()).getSkills(); 
 				
 				
 				for (SkillVO botSkill : botSkills) {
-			 		
 			 		switch (botSkill.getSkillId()) {
 			 			// 回復關鍵字訊息
 				 		case 1: 
@@ -132,7 +137,13 @@ public class MessageRestController {
 				 				break;
 				 			}
 							break;
-			
+						// 回復天氣圖
+				 		case 3: 
+				 			if(weatherSkill.replyWeatherSkill(lineEvent, lineBotVO.getToken())) {
+				 				isFinishEvent = true;
+				 				break;
+				 			}
+							break;
 						default:
 						break;
 					}
@@ -202,29 +213,11 @@ public class MessageRestController {
 			+ "YRtN58DaPUEsqrfLQYIBmAhLmNyrJBXXS+MKiXQix6Du9XjO+xAd/uvhiiU+bb7CdRoSw"
 			+ "OPww0/E12BzLcawJgmJ8Q3aCcv2LgD8SsT/dlM8ArUDFxAdB04t89/1O/w1cDnyilFU=";
 	
-	private final String GET_MEMBER_PROFILE_URL = "https://api.line.me/v2/bot/profile/";
 
 	@GetMapping("/memberInfo")
     public String getMemberInfo(String lineId) {
 		System.out.println("LineId : " + lineId);
-        return getLineMemberProfile(lineId, CHANNEL_ACCESS_TOKEN);
+        return memberSkill.getLineMemberProfile(lineId, CHANNEL_ACCESS_TOKEN);
     }
 	
-	private String getLineMemberProfile(String lineId, String channelAccessToken) {
-		String url = GET_MEMBER_PROFILE_URL + lineId;
-		RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());	    
-		restTemplate.getMessageConverters().set(1, 
-				new StringHttpMessageConverter(StandardCharsets.UTF_8));
-		
-		HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        headers.add("Authorization", String.format("%s %s", "Bearer", channelAccessToken));
-		
-	    HttpEntity<String> request = new HttpEntity<String>(headers);
-	    ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request , String.class );
-//	    System.out.println(response.getBody());
-	    System.out.println("response.getBody() : " + response.getBody());
-
-	    return  response.getBody();
-	}
 }

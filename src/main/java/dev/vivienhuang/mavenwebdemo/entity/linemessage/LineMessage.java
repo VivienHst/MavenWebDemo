@@ -1,7 +1,7 @@
 package dev.vivienhuang.mavenwebdemo.entity.linemessage;
 
 public class LineMessage {
-    public String type;
+    protected String type;
     
 	public String getType() {
 		return type;

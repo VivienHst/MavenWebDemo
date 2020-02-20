@@ -2,6 +2,8 @@ package dev.vivienhuang.mavenwebdemo.linebot.message;
 
 import java.util.List;
 
+import dev.vivienhuang.mavenwebdemo.entity.linemessage.LineMessage;
+
 public class ReplyMessageModel {
 	/*
 	 * 
@@ -20,9 +22,9 @@ public class ReplyMessageModel {
 	
 	private String replyToken;
 	
-	private List<MessageModel> messages;
+	private List<LineMessage> messages;
 	
-	public ReplyMessageModel(String replyToken, List<MessageModel> messages) {
+	public ReplyMessageModel(String replyToken, List<LineMessage> messages) {
 		super();
 		this.replyToken = replyToken;
 		this.messages = messages;
@@ -33,10 +35,10 @@ public class ReplyMessageModel {
 	public void setReplyToken(String replyToken) {
 		this.replyToken = replyToken;
 	}
-	public List<MessageModel> getMessages() {
+	public List<LineMessage> getMessages() {
 		return messages;
 	}
-	public void setMessages(List<MessageModel> messages) {
+	public void setMessages(List<LineMessage> messages) {
 		this.messages = messages;
 	}
 }

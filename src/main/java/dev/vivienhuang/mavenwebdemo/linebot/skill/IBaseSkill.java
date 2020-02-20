@@ -11,10 +11,12 @@ import dev.vivienhuang.mavenwebdemo.linebot.webhook.EventModel;
 public interface IBaseSkill {
 	public boolean isBotExist(String destination);
 	public LineBotVO getLineBotInfo(String  destination);
-	public boolean dealMessage(EventModel lineEvent);
+	public boolean dealMessage(LineBotVO lineBotVO, EventModel lineEvent);
 	
 	public void pushTextMessage(String userId, String message, String channelAccessToken);
 	public void pushImageMessage(String userId, String url, String channelAccessToken);
+
+	public void replyTextMessage(String replyToken, String message, String channelAccessToken);
 
 	public void sendPushMessage(String userId, List<LineMessage> messages, String channelAccessToken);
 	public void sendReplyMessage(ReplyMessageModel replyMessageModel, String channelAccessToken);

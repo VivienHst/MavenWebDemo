@@ -36,12 +36,12 @@ public class MemberSkill implements IMemberSkill {
 		lineMemberVO.setLinePicture(jsonObject.getString("pictureUrl"));
 		lineMemberVO.setBotId(lineBotVO.getBotId());
 		lineMemberVO.setCreateDate(new java.sql.Timestamp(System.currentTimeMillis()));
-		lineMemberVO.setMemberStatus(1);
 		lineMemberService.createLineMember(lineMemberVO);		
 		return lineMemberVO;
 	}
 	
-	private String getLineMemberProfile(String lineId, String channelAccessToken) {
+	@Override
+	public String getLineMemberProfile(String lineId, String channelAccessToken) {
 		String url = GET_MEMBER_PROFILE_URL + lineId;
 		RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());	    
 		restTemplate.getMessageConverters().set(1, 

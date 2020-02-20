@@ -17,22 +17,18 @@
 			
 	<jsp:include page="navbar_and_side_menu.jsp"></jsp:include>	
 	<div id="main">
-	
-		<ul>
-			<li>
-				<a href="${pageContext.request.contextPath}/newTextMessage?lineId=${lineId}">Text Message</a>	
-			</li>
+		<form:form action="sendTemplateMessage"
+			 modelAttribute ="newText"  method="post">
+			<table border="1" >		
+				<tr>
+					<td>Message</td>
+					<td><input type="text" value = "${textMessage}" name="textMessage"/></td>
+				</tr>
 			
-			<li>
-				<a href="${pageContext.request.contextPath}/newImageMessage?lineId=${lineId}">Image Message</a>	
-			</li>
-			
-			<li>
-				<a href="${pageContext.request.contextPath}/newTemplateMessage?lineId=${lineId}">Template Message</a>	
-			</li>
-			
-		</ul>
-		
+			</table>
+			<input type="hidden" value = "${lineId}" name="lineId"/>
+			<input type="submit" value="新增">						
+		</form:form>
 		<a href="${pageContext.request.contextPath}/home">Home</a>	
 
 	</div>

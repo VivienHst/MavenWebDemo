@@ -42,7 +42,7 @@ public class MessageSkill implements IMessageSkill {
 			
 			if (code == 1) {
 				String replyMessage = basicDBMessageVO.getMessage();
-				List<MessageModel> messageModels = new ArrayList<>();
+				List<LineMessage> messageModels = new ArrayList<>();
 				messageModels.add(new MessageModel("text", replyMessage));
 				baseSkill.sendReplyMessage(new ReplyMessageModel(lineEvent.getReplyToken(), messageModels), channelAccessToken);
 				return true;
@@ -56,7 +56,7 @@ public class MessageSkill implements IMessageSkill {
 	public boolean replyEchoMessage(EventModel lineEvent, String channelAccessToken, String lineName) {
 		if(lineEvent.getType().equals("message")) {
 			String receiveMessage = lineEvent.getMessage().getText();
-			List<MessageModel> messageModels = new ArrayList<>();
+			List<LineMessage> messageModels = new ArrayList<>();
 			messageModels.add(new MessageModel("text", lineName + " 說:"));
 			messageModels.add(new MessageModel("text", receiveMessage));
 			baseSkill.sendReplyMessage(new ReplyMessageModel(lineEvent.getReplyToken(), messageModels), channelAccessToken);

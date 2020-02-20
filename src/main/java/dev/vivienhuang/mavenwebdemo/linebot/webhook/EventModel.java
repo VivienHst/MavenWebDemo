@@ -10,6 +10,7 @@ public class EventModel {
 	private String timestamp;
 	private SourceModel source;
 	private ReceiveMessageModel message;
+	private ReceivePostbackModel postback;
 	
 	public String getReplyToken() {
 		return replyToken;
@@ -46,5 +47,11 @@ public class EventModel {
 	}
 	public void setMessage(ReceiveMessageModel message) {
 		this.message = message;
+	}
+	public ReceivePostbackModel getPostback() {
+		return postback;
+	}
+	public void setPostback(ReceivePostbackModel postback) {
+		this.postback = postback;
 	}
 }

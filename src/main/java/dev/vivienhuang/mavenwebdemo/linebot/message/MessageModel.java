@@ -1,8 +1,9 @@
 package dev.vivienhuang.mavenwebdemo.linebot.message;
 
-public class MessageModel {
+import dev.vivienhuang.mavenwebdemo.entity.linemessage.LineMessage;
+
+public class MessageModel extends LineMessage {
 	
-	private String type;
 	private String text;
 	
 	
@@ -12,9 +13,7 @@ public class MessageModel {
 		this.type = type;
 		this.text = text;
 	}
-	public String getType() {
-		return type;
-	}
+	
 	public void setType(String type) {
 		this.type = type;
 	}

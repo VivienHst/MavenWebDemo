@@ -22,6 +22,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import dev.vivienhuang.mavenwebdemo.entity.MemberPermissionPK;
 import dev.vivienhuang.mavenwebdemo.entity.MemberPermissionVO;
 import dev.vivienhuang.mavenwebdemo.entity.MemberVO;
+import dev.vivienhuang.mavenwebdemo.linebot.skill.IWeatherSkill;
 import dev.vivienhuang.mavenwebdemo.service.member.IMemberPermissionService;
 import dev.vivienhuang.mavenwebdemo.service.member.IMemberService;
 
@@ -36,6 +37,8 @@ public class HomeController {
 	@Autowired
 	IMemberPermissionService memberPermissionService;
 
+	@Autowired 
+	IWeatherSkill weatherSkill;
 	
 	@GetMapping("/home")
 	public String getHomePage() {
@@ -50,6 +53,8 @@ public class HomeController {
 		/*
 		 * (String account, String password, String firstName, String lastName, String email, String phoneCode,
 			String phoneNumber, String state, String type, Timestamp createDate)*/
+		
+		System.out.println(weatherSkill.getObserveRadarDataImage());
 		return "home";
 	}
 	
