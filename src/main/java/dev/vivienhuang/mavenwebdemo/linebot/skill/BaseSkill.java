@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -64,11 +63,29 @@ public class BaseSkill implements IBaseSkill {
 
 	@Override
 	public boolean dealMessage(LineBotVO lineBotVO, EventModel lineEvent) {
+
+		if(isAddressMessage(lineBotVO, lineEvent)) {
+			return true;
+		}
+		
 		if(isGetSkillList(lineBotVO, lineEvent)) {
 			return true;
 		}
 		
 		if(isGetSkillDescript(lineBotVO, lineEvent)) {
+			return true;
+		}
+		
+		
+		return false;
+	}
+	
+	private boolean isAddressMessage(LineBotVO lineBotVO, EventModel lineEvent) {
+		if(lineEvent.getType().equals("message") && lineEvent.getMessage().getType().equals("location")) {
+			
+			String replyMessage = "取得位置訊息:\nLatitude:" + lineEvent.getMessage().getLatitude()
+					+ "\nLongitude:" + lineEvent.getMessage().getLongitude();
+			replyTextMessage(lineEvent.getReplyToken(), replyMessage, lineBotVO.getToken());
 			return true;
 		}
 		

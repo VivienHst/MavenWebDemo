@@ -9,7 +9,9 @@ public class ReceiveMessageModel {
 	private String packageId;
 	private String stickerResourceType;
 	private ContentProvider contentProvider;
-
+	private String address;
+	private double latitude;
+	private double longitude;
 	
 	public String getId() {
 		return id;
@@ -53,5 +55,24 @@ public class ReceiveMessageModel {
 	public void setContentProvider(ContentProvider contentProvider) {
 		this.contentProvider = contentProvider;
 	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public double getLatitude() {
+		return latitude;
+	}
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+	public double getLongitude() {
+		return longitude;
+	}
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+	
 	
 }

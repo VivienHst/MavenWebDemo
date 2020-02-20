@@ -1,7 +1,6 @@
 package dev.vivienhuang.mavenwebdemo.rest;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -14,19 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -126,7 +117,6 @@ public class MessageRestController {
 				boolean isFinishEvent = false;	
 				LineMemberVO lineMemberVO = memberSkill.registerMember(lineBotVO, lineEvent);
 				Set<SkillVO> botSkills = lineBotService.getLineBot(lineBotVO.getBotId()).getSkills(); 
-				
 				
 				for (SkillVO botSkill : botSkills) {
 			 		switch (botSkill.getSkillId()) {
