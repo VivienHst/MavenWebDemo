@@ -32,7 +32,7 @@ public class WeatherSkill implements IWeatherSkill {
 	
 	@Override
 	public boolean replyWeatherSkill(EventModel lineEvent, String channelAccessToken) {
-		if(lineEvent.getType().equals("message")) {
+		if(baseSkill.isTextMessage(lineEvent)) {
 			String receiveMessage = lineEvent.getMessage().getText();
 			if(receiveMessage.equals("天氣")) {
 				String replyMessage = getObserveRadarDataImage();

@@ -1,89 +1,62 @@
-package dev.vivienhuang.mavenwebdemo.controller;
+package dev.vivienhuang.mavenwebdemo.linebot.skill;
 
-
-
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
-
-import org.hibernate.Session;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-import dev.vivienhuang.mavenwebdemo.entity.MemberPermissionPK;
-import dev.vivienhuang.mavenwebdemo.entity.MemberPermissionVO;
-import dev.vivienhuang.mavenwebdemo.entity.MemberVO;
 import dev.vivienhuang.mavenwebdemo.entity.linemessage.LineMessage;
+import dev.vivienhuang.mavenwebdemo.linebot.message.ReplyMessageModel;
+import dev.vivienhuang.mavenwebdemo.linebot.message.action.UriAction;
 import dev.vivienhuang.mavenwebdemo.linebot.message.flex.BoxComponent;
 import dev.vivienhuang.mavenwebdemo.linebot.message.flex.BubbleContent;
+import dev.vivienhuang.mavenwebdemo.linebot.message.flex.ButtonComponent;
+import dev.vivienhuang.mavenwebdemo.linebot.message.flex.CarouselContent;
 import dev.vivienhuang.mavenwebdemo.linebot.message.flex.FlexContent;
 import dev.vivienhuang.mavenwebdemo.linebot.message.flex.FlexMessage;
 import dev.vivienhuang.mavenwebdemo.linebot.message.flex.ImageComponent;
 import dev.vivienhuang.mavenwebdemo.linebot.message.flex.TextComponent;
-import dev.vivienhuang.mavenwebdemo.linebot.skill.IBaseSkill;
-import dev.vivienhuang.mavenwebdemo.linebot.skill.IWeatherSkill;
-import dev.vivienhuang.mavenwebdemo.service.member.IMemberPermissionService;
-import dev.vivienhuang.mavenwebdemo.service.member.IMemberService;
+import dev.vivienhuang.mavenwebdemo.linebot.webhook.EventModel;
 
-@Controller
-public class HomeController {
-	
-	private final String UPLOAD_DIRECTORY = "/images";
+@Component
+public class PlaceSkill implements IPlaceSkill {
 
-	@Autowired
-	IMemberService memberService;
-	
-	@Autowired
-	IMemberPermissionService memberPermissionService;
-
-	@Autowired 
-	IWeatherSkill weatherSkill;
-	
 	@Autowired
 	IBaseSkill baseSkill;
 	
-	@GetMapping("/home")
-	public String getHomePage() {
+	@Override
+	public boolean replyEatPlaceSkill(EventModel lineEvent, String channelAccessToken) {
+		if(lineEvent.getType().equals("message") && lineEvent.getMessage().getType().equals("location")) {
+			getGoogleMapNearbyPlace(
+				lineEvent.getMessage().getLatitude(),
+				lineEvent.getMessage().getLongitude(), 
+				lineEvent.getReplyToken(),
+				channelAccessToken);
+			return true;
+		}
 		
-		
-//		double latitude = 25.05257506700204;
-//		double longitude = 121.54403119542826;
-//		
-//		getGoogleMapNearbyPlace(latitude, longitude);
-		
-		System.out.println(weatherSkill.getObserveRadarDataImage());
-		return "home";
+		return false;
 	}
+
 	
 	String googleApiKey = "AIzaSyByFgt8sArSD4O65Nk3Cb_B9up6CntKmuQ";
 
-	private void getGoogleMapNearbyPlace(double latitude, double longitude) {
+	private void getGoogleMapNearbyPlace(double latitude, double longitude, String replyToken, String token) {
 		String googleMapPlaceApiUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" + 
 				"?location=" + latitude + "," +  longitude +
 				"&radius=80" + 
-				"&types=restaurant " + 
+				"&types=restaurant" + 
 				"&language=zh-TW" +
 				"&fields=photos,formatted_address,name,rating,opening_hours" + 
 				"&opennow" +
@@ -106,6 +79,10 @@ public class HomeController {
 	    } 
 	    
 	    
+	    CarouselContent carouselContent = new CarouselContent();
+	    
+	    List<FlexContent> bubbleContents = new ArrayList<FlexContent>();
+	    
 	    for (int i = 0; i < resultCount; i++) {
 			JSONObject resultObject =  jsonArray.getJSONObject(i);
 			
@@ -117,27 +94,47 @@ public class HomeController {
 
 	    	String vicinity = resultObject.getString("vicinity");
 	    	System.out.println("vicinity : " + vicinity);
-
+	    	
+	    	String placeId = resultObject.getString("place_id");
+	    	
+	    	JSONObject location = resultObject.getJSONObject("geometry").getJSONObject("location");
+	    	double placeLat = location.getDouble("lat");
+	    	double placeLng = location.getDouble("lng");
+	    	
+	    	String placeUrl = getPlaceGoogleMapUrl(placeLat, placeLng, placeId);
+	    	
 		    JSONArray photoArray = resultObject.getJSONArray("photos");
 
 	    	if(photoArray.length() > 0) {
 	    		String photo_reference = photoArray.getJSONObject(0).getString("photo_reference");
 		    	System.out.println("photo_reference : " + photo_reference);
 	    		String photoUrl = getMapPhotoByPhotoReferance(photo_reference);
-	    		BubbleContent placeContent = createRestaurantBubble(name, rating, vicinity, photoUrl);
-	    		
-	    		FlexMessage flexMessage  = new FlexMessage();
-	    		flexMessage.setAltText(name);
-	    		flexMessage.setContents(placeContent);
-	    		
-	    		List<LineMessage> placeMessage = new ArrayList<LineMessage>();
-	    		placeMessage.add(flexMessage);
-//	    		baseSkill.sendPushMessage(userId, messages, channelAccessToken);
+	    		BubbleContent placeContent = createRestaurantBubble(name, rating, vicinity, photoUrl, placeUrl);	    		
+	    		bubbleContents.add(placeContent);
 	    	}
 		}
+	    carouselContent.setContents(bubbleContents);
+	    
+	    FlexMessage flexMessage  = new FlexMessage();
+		flexMessage.setAltText("附近餐廳資訊");
+		flexMessage.setContents(carouselContent);
+		List<LineMessage> placeMessage = new ArrayList<LineMessage>();
+		placeMessage.add(flexMessage);
+		
+		ReplyMessageModel replyMessageModel = new ReplyMessageModel(replyToken, placeMessage);
+		baseSkill.sendReplyMessage(replyMessageModel, token);
 	}
 	
-	private BubbleContent createRestaurantBubble(String name, double rating, String vicinity, String photoUrl) {
+	private String getPlaceGoogleMapUrl(double latitude, double longitude, String placeId) {
+
+		String mapUrl = "https://www.google.com/maps/search/?api=1"
+				+ "&query=" + latitude + "," + longitude
+				+ "&query_place_id=" + placeId;
+		
+		return mapUrl;
+	}
+	
+	private BubbleContent createRestaurantBubble(String name, double rating, String vicinity, String photoUrl, String mapUrl) {
 		BubbleContent bubbleContent = new BubbleContent();
 		
 		ImageComponent heroComponent  = new ImageComponent();
@@ -158,7 +155,6 @@ public class HomeController {
 		bodyContents.add(titleTextComponent);
 		
 		// ----- 顯示地址 -----
-
 		BoxComponent addressBox = new BoxComponent();
 		addressBox.setLayout("vertical");
 		addressBox.setMargin("lg");
@@ -182,8 +178,8 @@ public class HomeController {
 		addressContents.add(addressPlaceComponent);
 		addressBox.setContents(addressContents);
 		bodyContents.add(addressBox);
-		// ----- 顯示評價 -----
 		
+		// ----- 顯示評價 -----
 		BoxComponent ratingBox = new BoxComponent();
 		ratingBox.setLayout("vertical");
 		ratingBox.setMargin("lg");
@@ -207,107 +203,30 @@ public class HomeController {
 		ratingContents.add(ratingCountComponent);
 		ratingBox.setContents(ratingContents);
 		bodyContents.add(ratingBox);
+		bodyComponent.setContents(bodyContents);
+		bubbleContent.setBody(bodyComponent);
+		
+		// set footer
+		
+		BoxComponent footerComponent = new BoxComponent();
+		footerComponent.setLayout("vertical");
+		List<FlexContent> footerContents = new ArrayList<FlexContent>();
+		
+		ButtonComponent placeMapLinkComponent = new ButtonComponent();
+		
+		UriAction uriAction = new UriAction();
+		uriAction.setLabel("查看地圖");
+		uriAction.setUri(mapUrl);
+		
+		placeMapLinkComponent.setStyle("link");
+		placeMapLinkComponent.setHeight("sm");
+		placeMapLinkComponent.setAction(uriAction);
+		
+		footerContents.add(placeMapLinkComponent);
+		footerComponent.setContents(footerContents);
+		bubbleContent.setFooter(footerComponent);
+	
 		return bubbleContent;
-
-		/*
-
-  "body": {
-    "type": "box",
-    "layout": "vertical",
-    "contents": [
-      {
-        "type": "text",
-        "text": "Brown Cafe",
-        "weight": "bold",
-        "size": "xl"
-      },
-      {
-        "type": "box",
-        "layout": "vertical",
-        "margin": "lg",
-        "spacing": "sm",
-        "contents": [
-          {
-            "type": "box",
-            "layout": "baseline",
-            "spacing": "sm",
-            "contents": [
-              {
-                "type": "text",
-                "text": "Place",
-                "color": "#aaaaaa",
-                "size": "sm",
-                "flex": 1
-              },
-              {
-                "type": "text",
-                "text": "Miraina Tower, 4-1-6 Shinjuku, Tokyo",
-                "wrap": true,
-                "color": "#666666",
-                "size": "sm",
-                "flex": 5
-              }
-            ]
-          },
-          {
-            "type": "box",
-            "layout": "baseline",
-            "spacing": "sm",
-            "contents": [
-              {
-                "type": "text",
-                "text": "Time",
-                "color": "#aaaaaa",
-                "size": "sm",
-                "flex": 1
-              },
-              {
-                "type": "text",
-                "text": "10:00 - 23:00",
-                "wrap": true,
-                "color": "#666666",
-                "size": "sm",
-                "flex": 5
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  "footer": {
-    "type": "box",
-    "layout": "vertical",
-    "spacing": "sm",
-    "contents": [
-      {
-        "type": "button",
-        "style": "link",
-        "height": "sm",
-        "action": {
-          "type": "uri",
-          "label": "CALL",
-          "uri": "https://linecorp.com"
-        }
-      },
-      {
-        "type": "button",
-        "style": "link",
-        "height": "sm",
-        "action": {
-          "type": "uri",
-          "label": "WEBSITE",
-          "uri": "https://linecorp.com"
-        }
-      },
-      {
-        "type": "spacer",
-        "size": "sm"
-      }
-    ],
-    "flex": 0
-  }
-}*/
 	}
 	
 	private String getMapPhotoByPhotoReferance(String photoreference) {
@@ -332,34 +251,4 @@ public class HomeController {
 	    String result = response.getBody();
 	    return result;
 	}
-	
-	@PostMapping("/uploadImageFile")
-	public String uploadImageFileAction() {
-
-//	public String uploadImageFileAction(@RequestParam CommonsMultipartFile file, HttpSession session) {
-//		ServletContext servletContext = session.getServletContext();
-//		final String path = servletContext.getRealPath(UPLOAD_DIRECTORY);
-//		final String fileName = file.getOriginalFilename();
-//		System.out.println(path + "/" + fileName);
-//		try {
-//			byte[] bytes = file.getBytes();
-//			BufferedOutputStream bufferedOutputStream;
-//			bufferedOutputStream = new BufferedOutputStream(
-//					new FileOutputStream(
-//							new File(path + File.separator + fileName)));
-//			bufferedOutputStream.write(bytes);
-//			bufferedOutputStream.flush();
-//			bufferedOutputStream.close();
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-
-		return "redirect:/home";
-	}
-
-	
 }

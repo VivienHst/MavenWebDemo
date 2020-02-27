@@ -64,9 +64,9 @@ public class BaseSkill implements IBaseSkill {
 	@Override
 	public boolean dealMessage(LineBotVO lineBotVO, EventModel lineEvent) {
 
-		if(isAddressMessage(lineBotVO, lineEvent)) {
-			return true;
-		}
+//		if(isAddressMessage(lineBotVO, lineEvent)) {
+//			return true;
+//		}
 		
 		if(isGetSkillList(lineBotVO, lineEvent)) {
 			return true;
@@ -92,9 +92,18 @@ public class BaseSkill implements IBaseSkill {
 		return false;
 	}
 	
+	public boolean isTextMessage(EventModel lineEvent) {
+		
+		if(lineEvent.getType().equals("message") && lineEvent.getMessage().getType().equals("text")) {
+			return true;
+		}
+		
+		return false;
+	}
+	
 	// 是否為取得技能列表指令
 	private boolean isGetSkillList(LineBotVO lineBotVO, EventModel lineEvent) {
-		if(lineEvent.getType().equals("message") && lineEvent.getMessage().getText().equals("指令")) {
+		if(isTextMessage(lineEvent) && lineEvent.getMessage().getText().equals("指令")) {
 			return replySkillList(lineBotVO, lineEvent);
 		}
 		return false;
@@ -108,19 +117,24 @@ public class BaseSkill implements IBaseSkill {
 			return  false;
 		}
 		
-		List<ActionObject> actionObjects = new ArrayList<ActionObject>();
+		List<ActionObject> actionObjects = new ArrayList<ActionObject>(); 
 
 		for (SkillVO skillVO : botSkills) {
 			switch (skillVO.getSkillId()){
  				// 加入關鍵字指令
 		 		case 1: 
-					PostbackAction keywordAction = new PostbackAction("關鍵字指令", "keywordSkill");
+					PostbackAction keywordAction = new PostbackAction("關鍵字指令", "skillDesc&&" + skillVO.getSkillDesc());
 					actionObjects.add(keywordAction);
 					break;
 				// 加入天氣指令
 		 		case 3:
 		 			MessageAction weatherAction = new MessageAction("天氣指令", "天氣");
 					actionObjects.add(weatherAction);
+					break;
+				// 加入尋找餐廳指令
+		 		case 4:
+					PostbackAction placeAction = new PostbackAction("尋找餐廳指令", "skillDesc&&" + skillVO.getSkillDesc());
+					actionObjects.add(placeAction);
 					break;
 				default:
 				break;
@@ -158,13 +172,10 @@ public class BaseSkill implements IBaseSkill {
 		}
 		return false;
 	}
-
-
 	
 	private boolean isKeywordDescript(LineBotVO lineBotVO, EventModel lineEvent) {
-		if(lineEvent.getType().equals("postback") && lineEvent.getPostback().getData().equals("keywordSkill")) {
-			String description = "輸入關鍵字可獲得對應訊息";
-			replyTextMessage(lineEvent.getReplyToken(), description, lineBotVO.getToken());
+		if(lineEvent.getType().equals("postback") && lineEvent.getPostback().getData().startsWith("skillDesc&&")) {
+			replyTextMessage(lineEvent.getReplyToken(), lineEvent.getPostback().getData().split("&&")[1], lineBotVO.getToken());
 			return true;
 		}
 		return false;

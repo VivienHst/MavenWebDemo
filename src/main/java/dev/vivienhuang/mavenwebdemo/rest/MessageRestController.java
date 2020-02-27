@@ -31,6 +31,7 @@ import dev.vivienhuang.mavenwebdemo.linebot.message.MessageModel;
 import dev.vivienhuang.mavenwebdemo.linebot.skill.IBaseSkill;
 import dev.vivienhuang.mavenwebdemo.linebot.skill.IMemberSkill;
 import dev.vivienhuang.mavenwebdemo.linebot.skill.IMessageSkill;
+import dev.vivienhuang.mavenwebdemo.linebot.skill.IPlaceSkill;
 import dev.vivienhuang.mavenwebdemo.linebot.skill.IWeatherSkill;
 import dev.vivienhuang.mavenwebdemo.linebot.webhook.EventModel;
 import dev.vivienhuang.mavenwebdemo.linebot.webhook.WebhookModel;
@@ -69,6 +70,9 @@ public class MessageRestController {
 
 	@Autowired
 	IWeatherSkill weatherSkill;
+	
+	@Autowired
+	IPlaceSkill placeSkill;
 	
 	@PostMapping("/bot_message")
     public String test3(@RequestBody String message) {
@@ -120,20 +124,27 @@ public class MessageRestController {
 				
 				for (SkillVO botSkill : botSkills) {
 			 		switch (botSkill.getSkillId()) {
-			 			// 回復關鍵字訊息
+			 			// 回覆關鍵字訊息
 				 		case 1: 
 				 			if(messageSkill.replyKeyWordMessage(lineEvent, lineBotVO.getToken())) {
 				 				isFinishEvent = true;
 				 				break;
 				 			}
 							break;
-						// 回復天氣圖
+						// 回覆天氣圖
 				 		case 3: 
 				 			if(weatherSkill.replyWeatherSkill(lineEvent, lineBotVO.getToken())) {
 				 				isFinishEvent = true;
 				 				break;
 				 			}
 							break;
+						// 回覆餐廳列表
+				 		case 4:
+				 			if(placeSkill.replyEatPlaceSkill(lineEvent, lineBotVO.getToken())) {
+				 				isFinishEvent = true;
+				 				break;
+				 			}
+				 			break;
 						default:
 						break;
 					}

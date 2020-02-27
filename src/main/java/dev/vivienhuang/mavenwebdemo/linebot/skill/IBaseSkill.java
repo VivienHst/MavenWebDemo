@@ -12,6 +12,7 @@ public interface IBaseSkill {
 	public boolean isBotExist(String destination);
 	public LineBotVO getLineBotInfo(String  destination);
 	public boolean dealMessage(LineBotVO lineBotVO, EventModel lineEvent);
+	public boolean isTextMessage(EventModel lineEvent);
 	
 	public void pushTextMessage(String userId, String message, String channelAccessToken);
 	public void pushImageMessage(String userId, String url, String channelAccessToken);

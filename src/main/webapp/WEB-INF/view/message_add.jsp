@@ -31,6 +31,10 @@
 				<a href="${pageContext.request.contextPath}/newTemplateMessage?lineId=${lineId}">Template Message</a>	
 			</li>
 			
+			<li>
+				<a href="${pageContext.request.contextPath}/newPlaceMessage?lineId=${lineId}">Place Message</a>	
+			</li>
+			
 		</ul>
 		
 		<a href="${pageContext.request.contextPath}/home">Home</a>	

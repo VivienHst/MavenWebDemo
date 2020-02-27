@@ -34,7 +34,7 @@ public class MessageSkill implements IMessageSkill {
 
 	@Override
 	public boolean replyKeyWordMessage(EventModel lineEvent, String channelAccessToken) {
-		if(lineEvent.getType().equals("message")) {
+		if(baseSkill.isTextMessage(lineEvent)) {
 			String receiveMessage = lineEvent.getMessage().getText();
 			BasicDBMessageVO basicDBMessageVO = chatKeyWordService.getKeyWord(receiveMessage, lineEvent.getSource().getUserId());
 			int code =  basicDBMessageVO.getCode();
@@ -54,7 +54,7 @@ public class MessageSkill implements IMessageSkill {
 
 	@Override
 	public boolean replyEchoMessage(EventModel lineEvent, String channelAccessToken, String lineName) {
-		if(lineEvent.getType().equals("message")) {
+		if(baseSkill.isTextMessage(lineEvent)) {
 			String receiveMessage = lineEvent.getMessage().getText();
 			List<LineMessage> messageModels = new ArrayList<>();
 			messageModels.add(new MessageModel("text", lineName + " 說:"));

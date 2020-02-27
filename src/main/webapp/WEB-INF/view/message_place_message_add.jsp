@@ -17,35 +17,20 @@
 			
 	<jsp:include page="navbar_and_side_menu.jsp"></jsp:include>	
 	<div id="main">
-		<form:form action="sendImageMessage"
-			 modelAttribute ="newImage"  method="post" enctype="multipart/form-data">
+				
+		<form:form action="sendPlaceMessage"
+			 modelAttribute ="newText"  method="post">
 			<table border="1" >		
 				<tr>
-					<td>ImageTitle</td>
-					<td><input type="text" value = "${imageTitle}" name="imageTitle"/></td>
+					<td>Message</td>
+					<td><input type="text" value = "${textMessage}" name="textMessage"/></td>
 				</tr>
-				
-				<tr>
-		            <td>ImageUrl</td>
-		            <td><input type="text" value = "${imageUrl}" name="imageUrl"/></td>
-		        </tr>
-				<tr>
-		            <td>Image</td>
-		            <td>
-		            	<%-- <c:if test="${imageUrl !=null}">
-			                <img src="${imageUrl}" width=100 height=100/>
-			                <br/>
-		            	</c:if>  --%>
-		            <input type="file" name="imageFiles"/></td>
-		        </tr>
 			
 			</table>
-			<input type="hidden" value = "${lineId}" name="lineId"/>			
+			<input type="hidden" value = "${lineId}" name="lineId"/>
 			<input type="submit" value="新增">				
 		</form:form>
 		<a href="${pageContext.request.contextPath}/home">Home</a>	
-
 	</div>
-
 </body>
 </html>
