@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import dev.vivienhuang.mavenwebdemo.dao.line_member.ILineMemberDAO;
-import dev.vivienhuang.mavenwebdemo.entity.LineMemberVO;
+import dev.vivienhuang.mavenwebdemo.entity.member.LineMemberVO;
 
 @Service
 public class LineMemberService implements ILineMemberService {

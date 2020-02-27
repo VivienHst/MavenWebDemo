@@ -1,4 +1,4 @@
-package dev.vivienhuang.mavenwebdemo.entity;
+package dev.vivienhuang.mavenwebdemo.entity.member;
 
 import java.sql.Timestamp;
 

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import dev.vivienhuang.mavenwebdemo.entity.LineBotVO;
-import dev.vivienhuang.mavenwebdemo.entity.LineMemberVO;
+import dev.vivienhuang.mavenwebdemo.entity.member.LineMemberVO;
 import dev.vivienhuang.mavenwebdemo.linebot.webhook.EventModel;
 import dev.vivienhuang.mavenwebdemo.service.line_member.ILineMemberService;
 

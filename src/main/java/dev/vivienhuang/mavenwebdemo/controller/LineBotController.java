@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import dev.vivienhuang.mavenwebdemo.entity.LineBotVO;
-import dev.vivienhuang.mavenwebdemo.entity.LineMemberVO;
 import dev.vivienhuang.mavenwebdemo.entity.SkillVO;
+import dev.vivienhuang.mavenwebdemo.entity.member.LineMemberVO;
 import dev.vivienhuang.mavenwebdemo.entity.viewmodel.LineBotVM;
 import dev.vivienhuang.mavenwebdemo.service.line_member.ILineMemberService;
 import dev.vivienhuang.mavenwebdemo.service.linebot.ILineBotService;

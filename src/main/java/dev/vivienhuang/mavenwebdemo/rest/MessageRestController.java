@@ -24,9 +24,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dev.vivienhuang.mavenwebdemo.entity.BasicDBMessageVO;
 import dev.vivienhuang.mavenwebdemo.entity.LineBotVO;
-import dev.vivienhuang.mavenwebdemo.entity.LineMemberVO;
 import dev.vivienhuang.mavenwebdemo.entity.LineWebhookLogVO;
 import dev.vivienhuang.mavenwebdemo.entity.SkillVO;
+import dev.vivienhuang.mavenwebdemo.entity.member.LineMemberVO;
 import dev.vivienhuang.mavenwebdemo.linebot.message.MessageModel;
 import dev.vivienhuang.mavenwebdemo.linebot.skill.IBaseSkill;
 import dev.vivienhuang.mavenwebdemo.linebot.skill.IMemberSkill;
@@ -141,6 +141,10 @@ public class MessageRestController {
 						// 回覆餐廳列表
 				 		case 4:
 				 			if(placeSkill.replyEatPlaceSkill(lineEvent, lineBotVO.getToken())) {
+				 				isFinishEvent = true;
+				 				break;
+				 			}
+				 			if(placeSkill.addFavoriteFoodPlace(lineBotVO, lineEvent)) {
 				 				isFinishEvent = true;
 				 				break;
 				 			}

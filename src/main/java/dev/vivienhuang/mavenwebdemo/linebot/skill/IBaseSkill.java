@@ -3,8 +3,8 @@ package dev.vivienhuang.mavenwebdemo.linebot.skill;
 import java.util.List;
 
 import dev.vivienhuang.mavenwebdemo.entity.LineBotVO;
-import dev.vivienhuang.mavenwebdemo.entity.LineMemberVO;
 import dev.vivienhuang.mavenwebdemo.entity.linemessage.LineMessage;
+import dev.vivienhuang.mavenwebdemo.entity.member.LineMemberVO;
 import dev.vivienhuang.mavenwebdemo.linebot.message.ReplyMessageModel;
 import dev.vivienhuang.mavenwebdemo.linebot.webhook.EventModel;
 

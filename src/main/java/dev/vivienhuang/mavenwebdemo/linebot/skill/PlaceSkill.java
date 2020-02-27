@@ -16,8 +16,12 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import dev.vivienhuang.mavenwebdemo.entity.LineBotVO;
 import dev.vivienhuang.mavenwebdemo.entity.linemessage.LineMessage;
+import dev.vivienhuang.mavenwebdemo.entity.member.LineMemberFavoritePlaceVO;
+import dev.vivienhuang.mavenwebdemo.entity.viewmodel.linemessage.LinePlaceVM;
 import dev.vivienhuang.mavenwebdemo.linebot.message.ReplyMessageModel;
+import dev.vivienhuang.mavenwebdemo.linebot.message.action.PostbackAction;
 import dev.vivienhuang.mavenwebdemo.linebot.message.action.UriAction;
 import dev.vivienhuang.mavenwebdemo.linebot.message.flex.BoxComponent;
 import dev.vivienhuang.mavenwebdemo.linebot.message.flex.BubbleContent;
@@ -28,12 +32,17 @@ import dev.vivienhuang.mavenwebdemo.linebot.message.flex.FlexMessage;
 import dev.vivienhuang.mavenwebdemo.linebot.message.flex.ImageComponent;
 import dev.vivienhuang.mavenwebdemo.linebot.message.flex.TextComponent;
 import dev.vivienhuang.mavenwebdemo.linebot.webhook.EventModel;
+import dev.vivienhuang.mavenwebdemo.service.line_member.ILineMemberFavoritePlaceService;
 
 @Component
 public class PlaceSkill implements IPlaceSkill {
 
 	@Autowired
 	IBaseSkill baseSkill;
+	
+
+	@Autowired
+	ILineMemberFavoritePlaceService lineMemberFavoritePlaceService;
 	
 	@Override
 	public boolean replyEatPlaceSkill(EventModel lineEvent, String channelAccessToken) {
@@ -51,6 +60,7 @@ public class PlaceSkill implements IPlaceSkill {
 
 	
 	String googleApiKey = "AIzaSyByFgt8sArSD4O65Nk3Cb_B9up6CntKmuQ";
+	// &key=AIzaSyByFgt8sArSD4O65Nk3Cb_B9up6CntKmuQ
 
 	private void getGoogleMapNearbyPlace(double latitude, double longitude, String replyToken, String token) {
 		String googleMapPlaceApiUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" + 
@@ -101,7 +111,7 @@ public class PlaceSkill implements IPlaceSkill {
 	    	double placeLat = location.getDouble("lat");
 	    	double placeLng = location.getDouble("lng");
 	    	
-	    	String placeUrl = getPlaceGoogleMapUrl(placeLat, placeLng, placeId);
+	    	String mapUrl = getPlaceGoogleMapUrl(placeLat, placeLng, placeId);
 	    	
 		    JSONArray photoArray = resultObject.getJSONArray("photos");
 
@@ -109,7 +119,9 @@ public class PlaceSkill implements IPlaceSkill {
 	    		String photo_reference = photoArray.getJSONObject(0).getString("photo_reference");
 		    	System.out.println("photo_reference : " + photo_reference);
 	    		String photoUrl = getMapPhotoByPhotoReferance(photo_reference);
-	    		BubbleContent placeContent = createRestaurantBubble(name, rating, vicinity, photoUrl, placeUrl);	    		
+	    		
+	    		LinePlaceVM linePlaceVM = new LinePlaceVM(placeId, name, rating, vicinity, photoUrl, mapUrl, latitude, longitude);
+	    		BubbleContent placeContent = createRestaurantBubble(linePlaceVM);	    		
 	    		bubbleContents.add(placeContent);
 	    	}
 		}
@@ -126,19 +138,83 @@ public class PlaceSkill implements IPlaceSkill {
 	}
 	
 	private String getPlaceGoogleMapUrl(double latitude, double longitude, String placeId) {
-
 		String mapUrl = "https://www.google.com/maps/search/?api=1"
 				+ "&query=" + latitude + "," + longitude
 				+ "&query_place_id=" + placeId;
-		
+	
 		return mapUrl;
 	}
 	
-	private BubbleContent createRestaurantBubble(String name, double rating, String vicinity, String photoUrl, String mapUrl) {
+	@Override
+	public boolean addFavoriteFoodPlace(LineBotVO lineBotVO, EventModel lineEvent) {
+		if(lineEvent.getType().equals("postback") && lineEvent.getPostback().getData().startsWith("addFoodPlace&&")) {
+			String placeId = lineEvent.getPostback().getData().split("&&")[1];			
+//			createLineFavoritePlaceVO(lineEvent.getSource().getUserId(), placeJson);
+			LinePlaceVM linePlaceVM = createLineFavoritePlaceVOByPlaceId(placeId);
+			
+			if(linePlaceVM != null) {
+				createLineFavoritePlaceVO(linePlaceVM, lineEvent.getSource().getUserId());
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	private LinePlaceVM createLineFavoritePlaceVOByPlaceId(String placeId) {
+		// https://maps.googleapis.com/maps/api/place/details/json?placeid=ChIJrTLr-GyuEmsRBfy61i59si0&key=YOUR_API_KEY
+		String getPlaceDetailUrl = "https://maps.googleapis.com/maps/api/place/details/json?"
+				+ "placeid=" + placeId 
+				+ "&key=" + googleApiKey 
+				+ "&language=zh-TW"
+				+ "&fields=photos,formatted_address,name,rating,opening_hours,geometry/location";
+		 String result = getHttpGetResult(getPlaceDetailUrl);
+		    
+	    System.out.println("response.getBody() : " + result);
+	    JSONObject jsonObject = new JSONObject(result);
+	    JSONObject resultObject = jsonObject.getJSONObject("result");
+	    String placeName = resultObject.getString("name");
+	    double rating = resultObject.getDouble("rating");
+	    String address = resultObject.getString("formatted_address");
+	    
+	    JSONObject locationObject = resultObject.getJSONObject("geometry").getJSONObject("location");
+	    double latitude = locationObject.getDouble("lat");
+	    double longitude = locationObject.getDouble("lng");
+	    String mapUrl = getPlaceGoogleMapUrl(latitude, longitude, placeId);
+    	
+	    JSONArray photoArray = resultObject.getJSONArray("photos");
+
+    	if(photoArray.length() > 0) {
+    		String photo_reference = photoArray.getJSONObject(0).getString("photo_reference");
+	    	System.out.println("photo_reference : " + photo_reference);
+    		String photoUrl = getMapPhotoByPhotoReferance(photo_reference);
+    		LinePlaceVM linePlaceVM = new LinePlaceVM(placeId, placeName, rating, address, photoUrl, mapUrl, latitude, longitude);
+    		return linePlaceVM;
+    	} else {
+			return null;
+		}			
+	}
+	
+	private void createLineFavoritePlaceVO(LinePlaceVM linePlaceVM, String lineId) {
+		LineMemberFavoritePlaceVO lineMemberFavoritePlaceVO = new LineMemberFavoritePlaceVO(
+				lineId,
+				linePlaceVM.getPlaceId(),
+				linePlaceVM.getPlaceName(),
+				linePlaceVM.getRating(), 
+				linePlaceVM.getAddress(), 
+				linePlaceVM.getPhotoUrl(),
+				linePlaceVM.getMapUrl(), 
+				linePlaceVM.getLatitude(),
+				linePlaceVM.getLongitude(), 
+				1,
+				new java.sql.Timestamp(System.currentTimeMillis()));
+		lineMemberFavoritePlaceService.createLineMemberFavoritePlace(lineMemberFavoritePlaceVO);
+	}
+//	
+	private BubbleContent createRestaurantBubble(LinePlaceVM linePlaceVM) {
 		BubbleContent bubbleContent = new BubbleContent();
 		
 		ImageComponent heroComponent  = new ImageComponent();
-		heroComponent.setUrl(photoUrl);
+		heroComponent.setUrl(linePlaceVM.getPhotoUrl());
 		heroComponent.setSize("full");
 		heroComponent.setAspectRatio("20:13");
 		heroComponent.setAspectMode("cover");
@@ -149,7 +225,7 @@ public class PlaceSkill implements IPlaceSkill {
 		List<FlexContent> bodyContents = new ArrayList<FlexContent>();
 		
 		TextComponent titleTextComponent = new TextComponent();
-		titleTextComponent.setText(name);
+		titleTextComponent.setText(linePlaceVM.getPlaceName());
 		titleTextComponent.setWeight("bold");
 		titleTextComponent.setSize("xl");
 		bodyContents.add(titleTextComponent);
@@ -167,7 +243,7 @@ public class PlaceSkill implements IPlaceSkill {
 		addressTitleComponent.setColor("#aaaaaa");
 		
 		TextComponent addressPlaceComponent = new TextComponent();
-		addressPlaceComponent.setText(vicinity);
+		addressPlaceComponent.setText(linePlaceVM.getAddress());
 		addressPlaceComponent.setSize("sm");
 		addressPlaceComponent.setFlex(5);
 		addressPlaceComponent.setColor("#666666");
@@ -192,7 +268,7 @@ public class PlaceSkill implements IPlaceSkill {
 		ratingTitleComponent.setColor("#aaaaaa");
 		
 		TextComponent ratingCountComponent = new TextComponent();
-		ratingCountComponent.setText(rating + "顆星");
+		ratingCountComponent.setText(linePlaceVM.getRating() + "顆星");
 		ratingCountComponent.setSize("sm");
 		ratingCountComponent.setFlex(5);
 		ratingCountComponent.setColor("#666666");
@@ -216,13 +292,27 @@ public class PlaceSkill implements IPlaceSkill {
 		
 		UriAction uriAction = new UriAction();
 		uriAction.setLabel("查看地圖");
-		uriAction.setUri(mapUrl);
+		uriAction.setUri(linePlaceVM.getMapUrl());
 		
 		placeMapLinkComponent.setStyle("link");
 		placeMapLinkComponent.setHeight("sm");
 		placeMapLinkComponent.setAction(uriAction);
 		
+		// todo add favorite
+		
+		ButtonComponent addFrvoriteComponent = new ButtonComponent();
+		
+		PostbackAction placePostback = new PostbackAction();
+		placePostback.setLabel("加入我的地點");
+		placePostback.setData("addFoodPlace&&" + linePlaceVM.getPlaceId());
+		
+		addFrvoriteComponent.setStyle("link");
+		addFrvoriteComponent.setHeight("sm");
+		addFrvoriteComponent.setAction(placePostback);
+		
 		footerContents.add(placeMapLinkComponent);
+		footerContents.add(addFrvoriteComponent);
+		
 		footerComponent.setContents(footerContents);
 		bubbleContent.setFooter(footerComponent);
 	

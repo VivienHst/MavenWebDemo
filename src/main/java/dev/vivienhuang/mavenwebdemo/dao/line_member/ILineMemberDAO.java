@@ -2,7 +2,7 @@ package dev.vivienhuang.mavenwebdemo.dao.line_member;
 
 import java.util.List;
 
-import dev.vivienhuang.mavenwebdemo.entity.LineMemberVO;
+import dev.vivienhuang.mavenwebdemo.entity.member.LineMemberVO;
 
 public interface ILineMemberDAO {
 	public void createLineMember(LineMemberVO lineMemberVO);
