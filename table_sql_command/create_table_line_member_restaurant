@@ -1,21 +1,18 @@
- Create table LineMemberFavoritePlace(
+  Create table LineMemberFavoritePlace(
      LineId varchar(50) not null,
      PlaceId varchar(100) not null,
      PlaceName nvarchar(50) not null,
-     Rating decimal not null,
+     Rating FLOAT not null,
      Address nvarchar(100) not null,
-     PhotoUrl nvarchar(200) not null,
-     MapUrl nvarchar(200) not null,
-     Latitude decimal null,
-     Longitude decimal null,
+     PhotoUrl nvarchar(400) not null,
+     MapUrl nvarchar(400) not null,
+     Latitude  FLOAT null,
+     Longitude FLOAT null,
      Type nvarchar(50) not null,
-     Status int not null,
      CreateDate datetime not null,
      UpdateDate datetime null,
     CONSTRAINT LINE_MEMBER_FAVORITE_PLACE_LINEID_FK FOREIGN KEY (LineId) REFERENCES LineMember (LineId),     
     constraint LINE_MEMBER_FAVORITE_PLACE_PK PRIMARY KEY(LineId, PlaceId)
  )
- 
  GO
- String name, double rating, String vicinity, String photoUrl, String mapUrl
  

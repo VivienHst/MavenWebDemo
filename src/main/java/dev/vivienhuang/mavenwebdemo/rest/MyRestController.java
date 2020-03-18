@@ -34,7 +34,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import dev.vivienhuang.mavenwebdemo.linebot.member.MemberStatus;
 import dev.vivienhuang.mavenwebdemo.service.cache.ILineBotCacheService;
+import dev.vivienhuang.mavenwebdemo.service.cache.ILineMemberCacheService;
 import dev.vivienhuang.mavenwebdemo.service.linebot.ILineBotService;
 
 @RestController
@@ -48,12 +50,30 @@ public class MyRestController {
 	ILineBotCacheService lineBotCacheService;
 	
 	@Autowired
+	ILineMemberCacheService lineMemberCacheService;
+	
+	@Autowired
 	private CacheManager cacheManager; 
 	
 	
 	private List<String> students;
 	private final String UPLOAD_DIRECTORY = "/images/";
 
+	@GetMapping("/queryMmeberStatus")
+	public String getMemberCacheTest(String lineId){
+		return lineMemberCacheService.getMemberStatus(lineId).toString();
+	}
+	
+	@GetMapping("/updateMmeberStatus1")
+	public String getMemberUpdateToWait(String lineId){
+		return lineMemberCacheService.getMemberStatus(lineId, MemberStatus.WAIT_FAVORITE_PLACE).toString();
+	}
+	
+	@GetMapping("/updateMmeberStatus2")
+	public String getMemberUpdateToNormal(String lineId){
+		return lineMemberCacheService.getMemberStatus(lineId, MemberStatus.NORMAL).toString();
+	}
+	
 	
 	@PostConstruct
 	public void loadData() {

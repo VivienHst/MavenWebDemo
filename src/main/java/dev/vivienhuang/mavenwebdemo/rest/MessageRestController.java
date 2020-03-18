@@ -9,8 +9,10 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.sound.sampled.LineEvent;
 
 import org.apache.commons.io.IOUtils;
+import org.hibernate.annotations.Check;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +29,7 @@ import dev.vivienhuang.mavenwebdemo.entity.LineBotVO;
 import dev.vivienhuang.mavenwebdemo.entity.LineWebhookLogVO;
 import dev.vivienhuang.mavenwebdemo.entity.SkillVO;
 import dev.vivienhuang.mavenwebdemo.entity.member.LineMemberVO;
+import dev.vivienhuang.mavenwebdemo.linebot.member.MemberStatus;
 import dev.vivienhuang.mavenwebdemo.linebot.message.MessageModel;
 import dev.vivienhuang.mavenwebdemo.linebot.skill.IBaseSkill;
 import dev.vivienhuang.mavenwebdemo.linebot.skill.IMemberSkill;
@@ -35,6 +38,7 @@ import dev.vivienhuang.mavenwebdemo.linebot.skill.IPlaceSkill;
 import dev.vivienhuang.mavenwebdemo.linebot.skill.IWeatherSkill;
 import dev.vivienhuang.mavenwebdemo.linebot.webhook.EventModel;
 import dev.vivienhuang.mavenwebdemo.linebot.webhook.WebhookModel;
+import dev.vivienhuang.mavenwebdemo.service.cache.ILineMemberCacheService;
 import dev.vivienhuang.mavenwebdemo.service.chat.IChatKeyWordService;
 import dev.vivienhuang.mavenwebdemo.service.line_member.ILineMemberService;
 import dev.vivienhuang.mavenwebdemo.service.linebot.ILineBotService;
@@ -123,6 +127,9 @@ public class MessageRestController {
 				Set<SkillVO> botSkills = lineBotService.getLineBot(lineBotVO.getBotId()).getSkills(); 
 				
 				for (SkillVO botSkill : botSkills) {
+					if(isFinishEvent) {
+				 		break;
+				 	}
 			 		switch (botSkill.getSkillId()) {
 			 			// 回覆關鍵字訊息
 				 		case 1: 
@@ -140,6 +147,14 @@ public class MessageRestController {
 							break;
 						// 回覆餐廳列表
 				 		case 4:
+				 			if(placeSkill.startQueryFavoritePlace(lineEvent, lineBotVO.getToken())) {
+				 				isFinishEvent = true;
+				 				break;
+				 			}
+				 			if(placeSkill.replyFavoritePlaceSkill(lineEvent, lineBotVO.getToken())) {
+				 				isFinishEvent = true;
+				 				break;
+				 			}
 				 			if(placeSkill.replyEatPlaceSkill(lineEvent, lineBotVO.getToken())) {
 				 				isFinishEvent = true;
 				 				break;
@@ -154,9 +169,7 @@ public class MessageRestController {
 					}
 					
 				}
-			 	if(isFinishEvent) {
-			 		continue;
-			 	}
+			 	
 				messageSkill.replyEchoMessage(lineEvent, lineBotVO.getToken(), lineMemberVO.getLineName());				
 			}
 		} catch (JSONException e) {
@@ -172,6 +185,8 @@ public class MessageRestController {
         return "ok";
     }
 	
+
+	
 	@PostMapping("/line_message2")
     public String receiveLineMessage(@RequestBody WebhookModel message) {
 		ObjectMapper mapper = new ObjectMapper();
@@ -181,7 +196,6 @@ public class MessageRestController {
 			jsonInString = mapper.writeValueAsString(message);
 			System.out.println("message : " + jsonInString);
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

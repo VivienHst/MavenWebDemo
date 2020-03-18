@@ -16,15 +16,14 @@
 	<jsp:include page="navbar_and_side_menu.jsp"></jsp:include>
 
 	<div id="main">
-		<h1>Responsive Side Menu</h1>
-		Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-		consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-		cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-		proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-		m2/repository/org/springframework/spring-webmvc/5.2.0.RELEASE/spring-webmvc-5.2.0.RELEASE.jar' cannot be read or is not a valid ZIP file	coolbot		Build path	Build Path Problem
+		<h1>Hello!</h1>
+		<div>
+			測試用帳號，使用Line掃描條碼加入好友後測試
+		</div>
+		<br>
+		<div>
+			<img src="https://i.imgur.com/sVhcsRf.png" width="200" height="200"/>
+		</div>
 
 	</div>
 <%-- 	<script type="text/javascript" src="<c:url value="/resources/static/js/side_menu.js" />"></script>

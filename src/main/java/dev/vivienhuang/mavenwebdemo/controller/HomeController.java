@@ -44,6 +44,7 @@ import dev.vivienhuang.mavenwebdemo.linebot.message.flex.ImageComponent;
 import dev.vivienhuang.mavenwebdemo.linebot.message.flex.TextComponent;
 import dev.vivienhuang.mavenwebdemo.linebot.skill.IBaseSkill;
 import dev.vivienhuang.mavenwebdemo.linebot.skill.IWeatherSkill;
+import dev.vivienhuang.mavenwebdemo.service.line_member.ILineMemberFavoritePlaceService;
 import dev.vivienhuang.mavenwebdemo.service.member.IMemberPermissionService;
 import dev.vivienhuang.mavenwebdemo.service.member.IMemberService;
 
@@ -64,6 +65,9 @@ public class HomeController {
 	@Autowired
 	IBaseSkill baseSkill;
 	
+	@Autowired
+	ILineMemberFavoritePlaceService lineMemberFavoritePlaceService;
+	
 	@GetMapping("/home")
 	public String getHomePage() {
 		
@@ -74,6 +78,7 @@ public class HomeController {
 //		getGoogleMapNearbyPlace(latitude, longitude);
 		
 		System.out.println(weatherSkill.getObserveRadarDataImage());
+		System.out.println(lineMemberFavoritePlaceService.getLineMemberFavoritePlacesByLineId("U02cca8961284cd8f3a58d8f2ab20feac" , 25.0520507 , 121.5445961));
 		return "home";
 	}
 	

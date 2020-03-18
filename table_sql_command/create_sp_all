@@ -1,0 +1,222 @@
+
+-- =====================LineMemberGet=======================
+  
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		vivien
+-- Create date: 20200122
+-- Description:	<Description,,>
+-- exec LineMemberGet '@lineId', '@lineName', '@lineId', '@botId'
+-- =============================================
+CREATE PROCEDURE [dbo].[LineMemberGet]
+	@lineId varchar(50),
+	@lineName nvarchar(50),
+	@linePicture varchar(200),
+	@botId int
+	
+	
+
+AS
+BEGIN
+	SET NOCOUNT ON;	
+    DECLARE @existLineId VARCHAR(50)
+
+    SELECT TOP (1) @existLineId = [LineId] 
+        FROM [dbo].[LineMember] where [LineId] = @lineId and [BotId] = @botId
+
+	if @existLineId is null
+	begin
+        INSERT INTO [dbo].[LineMember]
+                ([LineId]
+                ,[LineName]
+                ,[LinePicture]
+                ,[BotId]
+                ,[MemberStatus]
+                ,[CreateDate])
+        VALUES(@lineId, @lineName, @linePicture, @botId, 1, GETDATE())
+    end
+    
+    SELECT TOP (1) [LineId]
+	      ,[LineName]
+	      ,[LinePicture]
+	      ,[BotId]
+	      ,[MemberStatus]
+	      ,[CreateDate]
+	      ,[UpdateDate]
+	  FROM [dbo].[LineMember] where LineId = @lineId and BotId = @botId
+END
+
+GO
+
+
+-- =============================================
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		vivien
+-- Create date: 20200120
+-- Description:	<Description,,>
+-- exec SP_KeyResponseGet N'key',N'lineid'
+-- =============================================
+CREATE PROCEDURE [dbo].[KeywordResponseGet]
+	@keyword nvarchar(20),
+	@lineId varchar(50)
+AS
+BEGIN
+	SET NOCOUNT ON;	
+	declare @code int
+	declare @ChatValue nvarchar(100)
+    declare @CId int
+
+	set @code = 0
+	
+
+	select top 1 @ChatValue = [ChatValue], @CId = [CId] from [dbo].[ChatKeyWord] with (nolock)
+	where  [ChatKey] = @keyword
+
+	if @ChatValue is not null
+	begin
+		set @code = 1
+		INSERT INTO [dbo].[ChatKeyWordGetLog]
+           ([CId]
+           ,[LineId]
+           ,[LogDate])
+        VALUES(@CId,@lineId,GETDATE())
+	end
+	if @ChatValue is null
+	begin
+		set @ChatValue = ''
+	end
+	select @code as code, @ChatValue as message
+
+END
+
+GO
+
+
+-- =============================================
+
+
+-- =====================LineBotGetByDestination=======================
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		vivien
+-- Create date: 20200121
+-- Description:	<Description,,>
+-- exec LineBotGetByDestination '@destination'
+-- =============================================
+CREATE PROCEDURE [dbo].[LineBotGetByDestination]
+	@destination varchar(50)
+AS
+BEGIN
+	SET NOCOUNT ON;	
+    declare @botId int
+
+    SELECT TOP (1) @botId = [BotId] 
+        FROM [dbo].[LineBot] where Destination = @destination
+
+	if @BotId is null
+	begin
+        INSERT INTO [dbo].[LineBot]
+                ([Destination]
+                ,[Type]
+                ,[CreateDate])
+        VALUES(@destination, 'unknow', GETDATE())
+    end
+    
+    SELECT TOP (1) [BotId]
+                ,[Destination]
+                ,[Token]
+                ,[Secret]
+                ,[DisplayName]
+                ,[BotUid]
+                ,[Type]
+                ,[CreateDate]
+                ,[UpdateDate]
+        FROM [dbo].[LineBot] where Destination = @destination
+END
+
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		vivien
+-- Create date: 20200206
+-- Description:	<Description,,>
+-- exec LineBotGetByLineId '@lineId'
+-- =============================================
+Create PROCEDURE [dbo].[LineBotGetByLineId]
+	@lineId varchar(50)
+AS
+BEGIN
+	SET NOCOUNT ON;	
+    declare @botId int
+
+    SELECT TOP (1) @botId = [BotId] 
+        FROM [dbo].[LineMember] where LineId = @lineId
+
+    SELECT TOP (1) [BotId]
+                ,[Destination]
+                ,[Token]
+                ,[Secret]
+                ,[DisplayName]
+                ,[BotUid]
+                ,[Type]
+                ,[CreateDate]
+                ,[UpdateDate]
+        FROM [dbo].[LineBot] where BotId = @botId
+END
+
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		vivien
+-- Create date: 20200121
+-- Description:	<Description,,>
+-- exec MemberFavoritePlaceGetByLocation '@lineid' , '@latitude' , '@longitude'
+-- =============================================
+CREATE PROCEDURE [dbo].[MemberFavoritePlaceGetByLocation]
+	@lineid varchar(50),
+    @latitude float,
+	@longitude float
+
+AS
+BEGIN
+	SET NOCOUNT ON;	
+    SELECT TOP (5) [LineId]
+        ,[PlaceId]
+        ,[PlaceName]
+        ,[Rating]
+        ,[Address]
+        ,[PhotoUrl]
+        ,[MapUrl]
+        ,[Latitude]
+        ,[Longitude]
+        ,[Type]
+        ,[CreateDate]
+        ,[UpdateDate]
+        FROM [master].[dbo].[LineMemberFavoritePlace]
+        where [LineId] = @lineid
+        order by SQRT(SQUARE([Latitude] - @latitude) + SQUARE([Longitude] - @longitude)) 
+END
+
+GO

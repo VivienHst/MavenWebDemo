@@ -2,6 +2,9 @@ package dev.vivienhuang.mavenwebdemo.dao.line_member;
 
 import java.util.List;
 
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureQuery;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import dev.vivienhuang.mavenwebdemo.entity.member.LineMemberFavoritePlacePK;
 import dev.vivienhuang.mavenwebdemo.entity.member.LineMemberFavoritePlaceVO;
+import dev.vivienhuang.mavenwebdemo.entity.member.LineMemberVO;
 
 @Repository
 public class LineMemberFavoritePlaceDAO implements ILineMemberFavoritePlaceDAO {
@@ -55,5 +59,32 @@ public class LineMemberFavoritePlaceDAO implements ILineMemberFavoritePlaceDAO {
 				LineMemberFavoritePlaceVO.class); 
 		List<LineMemberFavoritePlaceVO> lineMemberFavoritePlaceVOs = query.getResultList();
 		return lineMemberFavoritePlaceVOs;
+	}
+	
+
+	@Override
+	public List<LineMemberFavoritePlaceVO> getLineMemberFavoritePlacesByLineId(String lineId, double latitude,
+			double longitude) {
+
+		Session session  = sessionFactory.getCurrentSession();
+		// MemberFavoritePlaceGetByLocation
+		// 回傳隨機附近最愛餐廳
+		StoredProcedureQuery storedProcedure 
+			= session.createStoredProcedureQuery("MemberFavoritePlaceGetRandomByLocation", LineMemberFavoritePlaceVO.class);
+		// set parameters
+		storedProcedure.registerStoredProcedureParameter("lineId", String.class, ParameterMode.IN);		
+		storedProcedure.registerStoredProcedureParameter("latitude", Double.class, ParameterMode.IN);		
+		storedProcedure.registerStoredProcedureParameter("longitude", Double.class, ParameterMode.IN);		
+	
+		storedProcedure.setParameter("lineId", lineId);
+	
+		storedProcedure.setParameter("latitude", latitude);
+		storedProcedure.setParameter("longitude", longitude);
+	
+		// execute SP
+		storedProcedure.execute();
+	    List<LineMemberFavoritePlaceVO> resultList = (List<LineMemberFavoritePlaceVO>) storedProcedure.getResultList();
+
+		return resultList;
 	}
 }

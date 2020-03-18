@@ -35,6 +35,8 @@ public class MemberSkill implements IMemberSkill {
 		lineMemberVO.setLineName(jsonObject.getString("displayName"));
 		lineMemberVO.setLinePicture(jsonObject.getString("pictureUrl"));
 		lineMemberVO.setBotId(lineBotVO.getBotId());
+		lineMemberVO.setMemberStatus(1);
+
 		lineMemberVO.setCreateDate(new java.sql.Timestamp(System.currentTimeMillis()));
 		lineMemberService.createLineMember(lineMemberVO);		
 		return lineMemberVO;

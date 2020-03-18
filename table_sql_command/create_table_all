@@ -1,0 +1,122 @@
+
+-- Create Member table --
+
+ Create table Member(
+     Uid int not null IDENTITY(1,1),
+     Account varchar(16) not null,
+     Password varchar(20) not null,
+     FirstName nvarchar (20) not null,
+     LastName nvarchar (20) not null,
+     Email nvarchar(40),
+     PhoneCode varchar(5),
+     PhoneNumber varchar(16),
+     State varchar(20) not null,
+     Type varchar(20) not null,
+     CreateDate datetime not null,
+     UpdateDate datetime,
+    constraint MEMBER_UID_PK PRIMARY KEY(Uid)
+ );
+ 
+ 
+
+-- 權限列表 --
+
+create table Permission(
+    Id int not null IDENTITY(1,1),
+    Permission varchar(100) not null
+    CONSTRAINT PERMISSION_ID_PK PRIMARY KEY (Id)
+)
+
+-- 使用者權限 --
+
+create table MemberPermission (
+    Account varchar(16) not null,
+    Permission varchar(50) not null,
+    CONSTRAINT PERMISSION_ACCOUNT_PERMISSION_UK UNIQUE (Account, Permission)
+);
+
+-- LineBot相關 -- 
+-- Log --
+create table LineWebhookLog(
+    Id int not null IDENTITY(1,1),
+    Destination nvarchar(100) not null,
+    Data nvarchar(max) not null,
+    CreateDate datetime not null,
+    CONSTRAINT LINE_WEBHOOK_LOG_ID_PK PRIMARY KEY (Id)
+)
+
+-- Line --
+	
+create table LineBot(
+    BotId int not null IDENTITY(1,1),
+    Destination varchar(100) null,
+    Token varchar(200) null,
+    Secret varchar(60) null,
+    DisplayName NVARCHAR(20) null,
+    BotUid VARCHAR(60) null,
+    Type varchar(10) not null,
+    CreateDate datetime not null,
+    UpdateDate datetime,
+    CONSTRAINT LINE_BOT_BOTID_PK PRIMARY KEY (BotId)
+)
+create table Skill (
+    SkillId               int NOT NULL  IDENTITY(1, 1),
+    SkillName             nvarchar(40) not null,
+    SkillDesc              nvarchar(100),
+    CONSTRAINT SKILL_SKILLID_PK PRIMARY KEY (SKILLID));
+
+create table LineBot_Skill (
+    BotId int not null,
+    SkillId int not null,
+    CONSTRAINT LINEBOT_SKILL_BOTID_FK FOREIGN KEY (BotId) REFERENCES LineBot (BotId),
+    CONSTRAINT LINEBOT_SKILL_SKILLID_FK FOREIGN Key (SkillId) REFERENCES Skill (SkillId),
+    CONSTRAINT LINEBOT_SKILL_PK PRIMARY KEY (BotId, SkillId)
+)
+
+ Create table LineMember(
+     LineId varchar(50) not null,
+     LineName nvarchar(50) null,
+     LinePicture nvarchar(200)  null,
+     BotId int not null,
+     MemberStatus [int] not null,
+     CreateDate datetime not null,
+     UpdateDate datetime null,
+    constraint LINE_MEMBER_UID_PK PRIMARY KEY(LineId),
+    CONSTRAINT LINE_MEMBER_BOTID_FK FOREIGN KEY (BotId) REFERENCES LineBot (BotId),
+    
+ )
+ 
+create table ChatKeyWord(
+    CId int not null IDENTITY(1,1),
+    ChatKey nvarchar(20) not null,
+    ChatValue nvarchar(100) not null,
+    CreateDate datetime not null,
+    CONSTRAINT CHAT_KEY_WORD_CID_PK PRIMARY KEY (CId)
+)
+
+create table ChatKeyWordGetLog(
+    AutoId int not null IDENTITY(1,1),
+    CId int not null,
+    LineId int not null,
+    LogDate datetime not null,
+    CONSTRAINT CHAT_KEY_WORD_GET_AUTO_ID_PK PRIMARY KEY (AutoId)
+)
+ 
+Create table LineMemberFavoritePlace(
+     LineId varchar(50) not null,
+     PlaceId varchar(100) not null,
+     PlaceName nvarchar(50) not null,
+     Rating FLOAT not null,
+     Address nvarchar(100) not null,
+     PhotoUrl nvarchar(400) not null,
+     MapUrl nvarchar(400) not null,
+     Latitude  FLOAT null,
+     Longitude FLOAT null,
+     Type nvarchar(50) not null,
+     CreateDate datetime not null,
+     UpdateDate datetime null,
+    CONSTRAINT LINE_MEMBER_FAVORITE_PLACE_LINEID_FK FOREIGN KEY (LineId) REFERENCES LineMember (LineId),     
+    constraint LINE_MEMBER_FAVORITE_PLACE_PK PRIMARY KEY(LineId, PlaceId)
+ )
+ GO
+

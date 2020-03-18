@@ -47,7 +47,6 @@
 					<th>BotId</th>
 					<!-- <th>Token</th> -->
 					<th>DisplayName</th>					
-					<th>Secret</th>
 					<th>Type</th>
 					<th>CreateDate</th>
 					<th>UpdateDate</th>
@@ -75,7 +74,7 @@
 						<td>${lineBotItem.displayName}</td>
 						
 						<%-- <td>${lineBotItem.token}</td> --%>
-						<td>${lineBotItem.secret}</td>			
+						<%-- <td>${lineBotItem.secret}</td> --%>			
 						<td>${lineBotItem.type}</td>
 						<td>${lineBotItem.createDate}</td>
 						<td>${lineBotItem.updateDate}</td>

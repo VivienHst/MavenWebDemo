@@ -21,6 +21,15 @@
 			<form:form action="linebotUpdate" modelAttribute="linebot" method="post">
 				<table>
 					<tbody>
+					
+						<tr>	
+							<td>BotId : </td>
+							<td>${linebot.lineBotVO.botId}</td>
+						</tr>
+						<tr>	
+							<td>BotUid : </td>
+							<td><form:input path="lineBotVO.botUid" value="${linebot.lineBotVO.botUid}"/></td>
+						</tr>
 						<tr>
 							<td>Token : </td>
 							<td><form:input path="lineBotVO.token" value="${linebot.lineBotVO.token}"/></td>
@@ -28,6 +37,10 @@
 						<tr>	
 							<td>Secret : </td>
 							<td><form:input path="lineBotVO.secret" value="${linebot.lineBotVO.secret}"/></td>
+						</tr>
+						<tr>	
+							<td>Destination : </td>
+							<td><form:input path="lineBotVO.destination" value="${linebot.lineBotVO.destination}"/></td>
 						</tr>
 						<tr>
 							<td>DisplayName : </td>

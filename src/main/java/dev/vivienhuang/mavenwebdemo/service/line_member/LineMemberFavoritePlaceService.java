@@ -45,4 +45,11 @@ public class LineMemberFavoritePlaceService implements ILineMemberFavoritePlaceS
 		return lineMemberFavoritePlaceDAO.getLineMemberFavoritePlacesByLineId(lineId);
 	}
 
+	@Override
+	@Transactional
+	public List<LineMemberFavoritePlaceVO> getLineMemberFavoritePlacesByLineId(String lineId, double latitude,
+			double longitude) {
+		return lineMemberFavoritePlaceDAO.getLineMemberFavoritePlacesByLineId(lineId, latitude, longitude);
+	}
+
 }

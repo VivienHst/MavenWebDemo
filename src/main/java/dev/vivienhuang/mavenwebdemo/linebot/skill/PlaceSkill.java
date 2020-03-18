@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -16,10 +17,13 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import dev.vivienhuang.mavenwebdemo.entity.BasicDBMessageVO;
 import dev.vivienhuang.mavenwebdemo.entity.LineBotVO;
 import dev.vivienhuang.mavenwebdemo.entity.linemessage.LineMessage;
 import dev.vivienhuang.mavenwebdemo.entity.member.LineMemberFavoritePlaceVO;
 import dev.vivienhuang.mavenwebdemo.entity.viewmodel.linemessage.LinePlaceVM;
+import dev.vivienhuang.mavenwebdemo.linebot.member.MemberStatus;
+import dev.vivienhuang.mavenwebdemo.linebot.message.MessageModel;
 import dev.vivienhuang.mavenwebdemo.linebot.message.ReplyMessageModel;
 import dev.vivienhuang.mavenwebdemo.linebot.message.action.PostbackAction;
 import dev.vivienhuang.mavenwebdemo.linebot.message.action.UriAction;
@@ -32,6 +36,7 @@ import dev.vivienhuang.mavenwebdemo.linebot.message.flex.FlexMessage;
 import dev.vivienhuang.mavenwebdemo.linebot.message.flex.ImageComponent;
 import dev.vivienhuang.mavenwebdemo.linebot.message.flex.TextComponent;
 import dev.vivienhuang.mavenwebdemo.linebot.webhook.EventModel;
+import dev.vivienhuang.mavenwebdemo.service.cache.ILineMemberCacheService;
 import dev.vivienhuang.mavenwebdemo.service.line_member.ILineMemberFavoritePlaceService;
 
 @Component
@@ -39,10 +44,82 @@ public class PlaceSkill implements IPlaceSkill {
 
 	@Autowired
 	IBaseSkill baseSkill;
-	
 
 	@Autowired
 	ILineMemberFavoritePlaceService lineMemberFavoritePlaceService;
+	
+	@Autowired 
+	ILineMemberCacheService lineMemberCacheService;
+	
+	@Override
+	public boolean startQueryFavoritePlace(EventModel lineEvent, String channelAccessToken) {
+		
+		if(baseSkill.isTextMessage(lineEvent)) {
+			String receiveMessage = lineEvent.getMessage().getText();
+			if(receiveMessage.equals("吃什麼")) {
+				lineMemberCacheService.getMemberStatus(lineEvent.getSource().getUserId(), MemberStatus.WAIT_FAVORITE_PLACE);
+				String replyMessage = "請傳送您的位置資訊";
+				List<LineMessage> messageModels = new ArrayList<>();
+				messageModels.add(new MessageModel("text", replyMessage));
+				baseSkill.sendReplyMessage(new ReplyMessageModel(lineEvent.getReplyToken(), messageModels), channelAccessToken);
+				return true;
+			}
+		}		
+		return false;
+	}
+	
+	@Override
+	public boolean replyFavoritePlaceSkill(EventModel lineEvent, String channelAccessToken) {
+		
+		if(!lineMemberCacheService.getMemberStatus(lineEvent.getSource().getUserId()).equals(MemberStatus.WAIT_FAVORITE_PLACE)){
+			return false;
+		}
+		if(lineEvent.getType().equals("message") && lineEvent.getMessage().getType().equals("location")) {
+			lineMemberCacheService.getMemberStatus(lineEvent.getSource().getUserId(), MemberStatus.NORMAL);
+
+			CarouselContent carouselContent = new CarouselContent();
+		    
+		    List<LineMemberFavoritePlaceVO> lineMemberFavoritePlaceVOs = lineMemberFavoritePlaceService.getLineMemberFavoritePlacesByLineId(
+		    		lineEvent.getSource().getUserId(), 
+		    		lineEvent.getMessage().getLatitude(),
+					lineEvent.getMessage().getLongitude());
+		    
+		    
+		    List<FlexContent> bubbleContents = new ArrayList<FlexContent>();
+		    
+		    for (LineMemberFavoritePlaceVO lineMemberFavoritePlaceVO : lineMemberFavoritePlaceVOs) {		    	
+		    	BubbleContent placeContent = null;
+				
+		    	LinePlaceVM linePlaceVM = new LinePlaceVM(
+		    			lineMemberFavoritePlaceVO.getLineMemberFavoritePlacePK().getPlaceId(),
+		    			lineMemberFavoritePlaceVO.getPlaceName(), 
+		    			lineMemberFavoritePlaceVO.getRating(),
+		    			lineMemberFavoritePlaceVO.getAddress(),
+		    			lineMemberFavoritePlaceVO.getPhotoUrl(),
+		    			lineMemberFavoritePlaceVO.getMapUrl(),
+		    			lineMemberFavoritePlaceVO.getLatitude(), 
+		    			lineMemberFavoritePlaceVO.getLongitude());
+	    		placeContent = createRestaurantBubble(linePlaceVM);
+				
+				if(placeContent != null) {
+					bubbleContents.add(placeContent);
+				}
+			}
+		    
+		    carouselContent.setContents(bubbleContents);
+		    
+		    FlexMessage flexMessage  = new FlexMessage();
+			flexMessage.setAltText("最愛餐廳");
+			flexMessage.setContents(carouselContent);
+			List<LineMessage> placeMessage = new ArrayList<LineMessage>();
+			placeMessage.add(flexMessage);
+			
+			ReplyMessageModel replyMessageModel = new ReplyMessageModel(lineEvent.getReplyToken(), placeMessage);
+			baseSkill.sendReplyMessage(replyMessageModel, channelAccessToken);
+			return true;
+		}		
+		return false;
+	}
 	
 	@Override
 	public boolean replyEatPlaceSkill(EventModel lineEvent, String channelAccessToken) {
@@ -65,7 +142,7 @@ public class PlaceSkill implements IPlaceSkill {
 	private void getGoogleMapNearbyPlace(double latitude, double longitude, String replyToken, String token) {
 		String googleMapPlaceApiUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" + 
 				"?location=" + latitude + "," +  longitude +
-				"&radius=80" + 
+				"&radius=200" + 
 				"&types=restaurant" + 
 				"&language=zh-TW" +
 				"&fields=photos,formatted_address,name,rating,opening_hours" + 
@@ -94,36 +171,11 @@ public class PlaceSkill implements IPlaceSkill {
 	    List<FlexContent> bubbleContents = new ArrayList<FlexContent>();
 	    
 	    for (int i = 0; i < resultCount; i++) {
-			JSONObject resultObject =  jsonArray.getJSONObject(i);
-			
-			String name = resultObject.getString("name");
-	    	System.out.println("name : " + name);
 	    	
-	    	double rating = resultObject.getDouble("rating");
-	    	System.out.println("rating : " + rating);
-
-	    	String vicinity = resultObject.getString("vicinity");
-	    	System.out.println("vicinity : " + vicinity);
-	    	
-	    	String placeId = resultObject.getString("place_id");
-	    	
-	    	JSONObject location = resultObject.getJSONObject("geometry").getJSONObject("location");
-	    	double placeLat = location.getDouble("lat");
-	    	double placeLng = location.getDouble("lng");
-	    	
-	    	String mapUrl = getPlaceGoogleMapUrl(placeLat, placeLng, placeId);
-	    	
-		    JSONArray photoArray = resultObject.getJSONArray("photos");
-
-	    	if(photoArray.length() > 0) {
-	    		String photo_reference = photoArray.getJSONObject(0).getString("photo_reference");
-		    	System.out.println("photo_reference : " + photo_reference);
-	    		String photoUrl = getMapPhotoByPhotoReferance(photo_reference);
-	    		
-	    		LinePlaceVM linePlaceVM = new LinePlaceVM(placeId, name, rating, vicinity, photoUrl, mapUrl, latitude, longitude);
-	    		BubbleContent placeContent = createRestaurantBubble(linePlaceVM);	    		
-	    		bubbleContents.add(placeContent);
-	    	}
+			BubbleContent placeContent = convertPlaceInfoToPlaceContent(jsonArray.getJSONObject(i), latitude, longitude);
+			if(placeContent != null) {
+				bubbleContents.add(placeContent);
+			}
 		}
 	    carouselContent.setContents(bubbleContents);
 	    
@@ -135,6 +187,46 @@ public class PlaceSkill implements IPlaceSkill {
 		
 		ReplyMessageModel replyMessageModel = new ReplyMessageModel(replyToken, placeMessage);
 		baseSkill.sendReplyMessage(replyMessageModel, token);
+	}
+	
+	private BubbleContent convertPlaceInfoToPlaceContent(JSONObject jsonObject, double latitude, double longitude) {
+		BubbleContent placeContent = null;
+		
+		try {
+			String name = jsonObject.getString("name");
+	    	System.out.println("name : " + name);
+	    	
+	    	double rating = jsonObject.getDouble("rating");
+	    	System.out.println("rating : " + rating);
+
+	    	String vicinity = jsonObject.getString("vicinity");
+	    	System.out.println("vicinity : " + vicinity);
+	    	
+	    	String placeId = jsonObject.getString("place_id");
+	    	
+	    	JSONObject location = jsonObject.getJSONObject("geometry").getJSONObject("location");
+	    	double placeLat = location.getDouble("lat");
+	    	double placeLng = location.getDouble("lng");
+	    	
+	    	String mapUrl = getPlaceGoogleMapUrl(placeLat, placeLng, placeId);
+	    	
+		    JSONArray photoArray = jsonObject.getJSONArray("photos");
+
+	    	if(photoArray.length() > 0) {
+	    		String photo_reference = photoArray.getJSONObject(0).getString("photo_reference");
+		    	System.out.println("photo_reference : " + photo_reference);
+	    		String photoUrl = getMapPhotoByPhotoReferance(photo_reference);
+	    		
+	    		LinePlaceVM linePlaceVM = new LinePlaceVM(placeId, name, rating, vicinity, photoUrl, mapUrl, latitude, longitude);
+	    		placeContent = createRestaurantBubble(linePlaceVM);	 
+	    		placeContent = setAddFoodPlaceButton(placeContent, linePlaceVM.getPlaceId());
+
+	    	}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		return placeContent;
 	}
 	
 	private String getPlaceGoogleMapUrl(double latitude, double longitude, String placeId) {
@@ -300,23 +392,44 @@ public class PlaceSkill implements IPlaceSkill {
 		
 		// todo add favorite
 		
+//		ButtonComponent addFrvoriteComponent = new ButtonComponent();
+		
+//		PostbackAction placePostback = new PostbackAction();
+//		placePostback.setLabel("加入我的地點");
+//		placePostback.setData("addFoodPlace&&" + linePlaceVM.getPlaceId());
+//		
+//		addFrvoriteComponent.setStyle("link");
+//		addFrvoriteComponent.setHeight("sm");
+//		addFrvoriteComponent.setAction(placePostback);
+//		
+//		footerContents.add(placeMapLinkComponent);
+//		footerContents.add(addFrvoriteComponent);
+		footerContents.add(placeMapLinkComponent);
+		footerComponent.setContents(footerContents);
+		bubbleContent.setFooter(footerComponent);
+		return bubbleContent;
+	}
+	
+	private BubbleContent setAddFoodPlaceButton(BubbleContent bubbleContent, String placeId) {
+		
 		ButtonComponent addFrvoriteComponent = new ButtonComponent();
 		
 		PostbackAction placePostback = new PostbackAction();
 		placePostback.setLabel("加入我的地點");
-		placePostback.setData("addFoodPlace&&" + linePlaceVM.getPlaceId());
+		placePostback.setData("addFoodPlace&&" + placeId);
 		
 		addFrvoriteComponent.setStyle("link");
 		addFrvoriteComponent.setHeight("sm");
 		addFrvoriteComponent.setAction(placePostback);
 		
-		footerContents.add(placeMapLinkComponent);
+		BoxComponent footerComponent = (BoxComponent) bubbleContent.getFooter();
+		
+		List<FlexContent> footerContents = footerComponent.getContents();
 		footerContents.add(addFrvoriteComponent);
 		
 		footerComponent.setContents(footerContents);
 		bubbleContent.setFooter(footerComponent);
-	
-		return bubbleContent;
+		return bubbleContent; 
 	}
 	
 	private String getMapPhotoByPhotoReferance(String photoreference) {
@@ -341,4 +454,8 @@ public class PlaceSkill implements IPlaceSkill {
 	    String result = response.getBody();
 	    return result;
 	}
+
+	
+
+	
 }
