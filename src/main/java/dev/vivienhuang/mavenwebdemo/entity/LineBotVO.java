@@ -15,6 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name="LineBot")
@@ -29,18 +31,23 @@ public class LineBotVO {
 	private String destination;
 	
 	@Column(name="Token")
+	@NotEmpty(message = "請填入Token")
 	private String token;
 	
 	@Column(name="Secret")
+	@NotEmpty(message = "請填入Secret")
 	private String secret;
 	
 	@Column(name="BotUid")
+	@NotEmpty(message = "請填入BotUid")
 	private String botUid;
 	
 	@Column(name="DisplayName")
+	@NotEmpty(message = "請填入DisplayName")
 	private String displayName ;
 	
 	@Column(name="Type")
+	@NotEmpty(message = "請填入Type")
 	private String type;
 	
 	@Column(name="CreateDate")
@@ -68,12 +75,13 @@ public class LineBotVO {
 		this.createDate = createDate;
 	}
 
-	public LineBotVO(String token, String secret, String displayName, String type, Timestamp createDate) {
+	public LineBotVO(String token, String secret, String displayName, String type, String botUid,Timestamp createDate) {
 		super();
 		this.token = token;
 		this.secret = secret;
 		this.displayName = displayName;
 		this.type = type;
+		this.botUid = botUid;
 		this.createDate = createDate;
 	}
 

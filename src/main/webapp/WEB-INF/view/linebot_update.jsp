@@ -93,7 +93,10 @@
 				<input type="submit" value="更新">
 				
 			</form:form>
+			
 		</div>
+		<a href="${pageContext.request.contextPath}/linebot">回列表</a>	
+		
 	</div>
 	
 </body>

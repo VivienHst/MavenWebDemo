@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -24,9 +25,9 @@
 			     MemberStatus [int] not null,
 			     CreateDate datetime not null,
 			     UpdateDate datetime null, -->
+   					<th>LinePicture</th>
 					<th>LineId</th>
 					<th>LineName</th>
-					<th>LinePicture</th>
 					<th>MemberStatus</th>
 					<th>CreateDate</th>
 					<th>SendMessage</th>
@@ -36,13 +37,16 @@
 				<c:forEach var="linemember" items="${linemembers}">
 		
 					<tr>
+						<td>
+		                	<img src="${linemember.linePicture}" width=40 height=40/>
+						</td>
 						<td>${linemember.lineId}</td>
 						<td>${linemember.lineName}</td>
-						<td>
-		                	<img src="${linemember.linePicture}" width=100 height=100/>
-						</td>
+						
 						<td>${linemember.memberStatus}</td>
-						<td>${linemember.createDate}</td>
+						<td>							
+							<fmt:formatDate value="${linemember.createDate}" pattern="yyyy-MM-dd HH:mm" />							
+						</td>
 						<td>
 							<a href="${pageContext.request.contextPath}/message?lineId=${linemember.lineId}">message</a>	
 						</td>

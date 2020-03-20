@@ -1,10 +1,14 @@
 package dev.vivienhuang.mavenwebdemo.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,12 +31,34 @@ public class ChatKeywordController {
 	}
 	
 	@PostMapping("/saveChatKeyword")
-	public String saveChatKeywordAction(@ModelAttribute("keyword")ChatKeyWordVO model) {
-		chatKeyWordService.createChatKeyWord(new ChatKeyWordVO(model.getChatKey(), 
-				model.getChatValue(), 
-				new java.sql.Timestamp(System.currentTimeMillis())));
-		return "redirect:/keyword";
+	public String saveChatKeywordAction(
+			Model model,
+			@Valid @ModelAttribute("keyword")ChatKeyWordVO chatKeyWordVO,
+			BindingResult bindingResult ) {
+        
+        if(bindingResult.hasErrors()) {
+        	List<ChatKeyWordVO> chatKeyWordVOs = chatKeyWordService.getChatKeyWords();
+    		model.addAttribute("chatKeywords", chatKeyWordVOs);
+    		return "keyword_list";
+        } else {
+        	chatKeyWordService.createChatKeyWord(new ChatKeyWordVO(
+        			chatKeyWordVO.getChatKey(), 
+        			chatKeyWordVO.getChatValue(), 
+    				new java.sql.Timestamp(System.currentTimeMillis())));
+    		return "redirect:/keyword";
+        }
+
 	}
+	
+	private List<String> toList(BindingResult bindingResult) {
+        List<String> errors = new ArrayList<>(); 
+        if(bindingResult.hasErrors()) {
+            bindingResult.getFieldErrors().forEach(err -> {
+                errors.add(err.getDefaultMessage());
+            });
+        }
+        return errors;
+    }
 	
 	@GetMapping("/keywordDelete")
 	public String keywordDeleteAction(@RequestParam("cId")int cId) {

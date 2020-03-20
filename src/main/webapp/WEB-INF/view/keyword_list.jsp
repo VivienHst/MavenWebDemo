@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
     
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -23,13 +24,17 @@
 		<table border="1" >				
 			<tr>
 				<td>Key : </td>
-				<td><form:input path="chatKey"/></td>
-				
+				<td>
+					<form:input path="chatKey"/>
+					<br>
+					<form:errors path="chatKey" class="error-msg"/>
+				</td> 
 				<td>Value : </td>
-				<td><form:input path="chatValue" /></td>
-				
-				<td>Key</td>
-			
+				<td>
+					<form:input path="chatValue" />
+					<br>
+					<form:errors path="chatValue" class="error-msg"/>
+				</td>			
 				<td><input type="submit" value="新增"></td>				
 			</tr>
 	</table>
@@ -62,7 +67,11 @@
 				<td>${chatKeyword.cId}</td>
 				<td>${chatKeyword.chatKey}</td>
 				<td>${chatKeyword.chatValue}</td>
-				<td>${chatKeyword.createDate}</td>
+				<td>
+					<fmt:formatDate value="${chatKeyword.createDate}" pattern="yyyy-MM-dd HH:mm" />
+				</td>
+											
+				
 				<td><a href="${dateilLink}">修改</a></td>				
 				<td><a href="${deleteLink}">刪除</a></td>	
 					

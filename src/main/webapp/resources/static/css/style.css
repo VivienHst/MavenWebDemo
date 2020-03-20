@@ -1,8 +1,8 @@
-	body{
-		font-family: "Arial", Serif;
-		background-color: #f4f4f4;
-		margin: 0;
-	}
+body{
+	font-family: "Arial", Serif;
+	background-color: #f4f4f4;
+	margin: 0;
+}
 
 .navbar{
 	background-color: #3b5998;
@@ -65,6 +65,11 @@
 	right: 22px;
 	font-size: 36px;
 	margin-left: 50px
+}
+
+.error-msg {
+	color:red;
+	font-size: 14px;	
 }
 
 #main{

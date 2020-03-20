@@ -6,9 +6,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,19 +40,34 @@ public class LineBotController {
 	@GetMapping("/linebot")
 	public String getLineBotPage(Model model) {
 		model.addAttribute("lineBots", lineBotService.getLineBots());
-		model.addAttribute("linebot", new LineBotVO());
+//		model.addAttribute("linebot", new LineBotVO());
 		return "linebot_list";
 	}
 	
+	@GetMapping("/addLineBot")
+	public String getAddLineBotPage(Model model) {
+		model.addAttribute("linebot", new LineBotVO());
+		return "linebot_add";
+	}
+	
 	@PostMapping("/saveLineBot")
-	public String saveChatKeywordAction(@ModelAttribute("linebot")LineBotVO model) {
-		lineBotService.createLineBot(new LineBotVO(
-				model.getToken(), 
-				model.getSecret(),
-				model.getDisplayName(), 
-				model.getType(), 
-				new java.sql.Timestamp(System.currentTimeMillis())));
-		return "redirect:/linebot";
+	public String saveChatKeywordAction
+			(@Valid @ModelAttribute("linebot")LineBotVO model,
+					BindingResult bindingResult) {
+		
+		if(bindingResult.hasErrors()){
+			return "linebot_add";
+		}else {
+			lineBotService.createLineBot(new LineBotVO(
+					model.getToken(), 
+					model.getSecret(),
+					model.getDisplayName(), 
+					model.getType(), 
+					model.getBotUid(),
+					new java.sql.Timestamp(System.currentTimeMillis())));
+			return "redirect:/linebot";
+		}		
+		
 	}
 	
 	@GetMapping("/linebotDetail")

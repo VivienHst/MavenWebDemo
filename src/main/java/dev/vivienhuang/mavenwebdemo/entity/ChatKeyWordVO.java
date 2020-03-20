@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name="ChatKeyWord")
@@ -19,9 +21,11 @@ public class ChatKeyWordVO {
 	private Integer cId;
 	
 	@Column(name="ChatKey")
+	@NotEmpty(message="請輸入關鍵字")
 	private String chatKey;
 	
 	@Column(name="ChatValue")
+	@NotEmpty(message="請輸入要回應的訊息內容")
 	private String chatValue;
 	
 	@Column(name="CreateDate")
