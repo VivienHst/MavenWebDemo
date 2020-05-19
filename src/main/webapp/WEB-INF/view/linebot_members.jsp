@@ -18,13 +18,6 @@
 		<div id="main">
 			<table border="1" >		
 				<tr>
-				<!-- LineId varchar(50) not null,
-			     LineName nvarchar(50) null,
-			     LinePicture nvarchar(200)  null,
-			     BotId int not null,
-			     MemberStatus [int] not null,
-			     CreateDate datetime not null,
-			     UpdateDate datetime null, -->
    					<th>LinePicture</th>
 					<th>LineId</th>
 					<th>LineName</th>

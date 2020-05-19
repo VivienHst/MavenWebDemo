@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -70,15 +73,16 @@ public class HomeController {
 	
 	@GetMapping("/home")
 	public String getHomePage() {
+
+		
+		Object user = SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
+		
+		if(user instanceof User) {
+			User principal = (User) user;
+			System.out.println("name : " + principal.getUsername());
+		}
 		
 		
-//		double latitude = 25.05257506700204;
-//		double longitude = 121.54403119542826;
-//		
-//		getGoogleMapNearbyPlace(latitude, longitude);
-		
-		System.out.println(weatherSkill.getObserveRadarDataImage());
-		System.out.println(lineMemberFavoritePlaceService.getLineMemberFavoritePlacesByLineId("U02cca8961284cd8f3a58d8f2ab20feac" , 25.0520507 , 121.5445961));
 		return "home";
 	}
 	
@@ -105,11 +109,10 @@ public class HomeController {
 	    int resultCount = jsonArray.length();
 	    int maxCount = 3;
 	    
-	    
 	    if(resultCount > maxCount) {
 	    	resultCount = maxCount;
 	    } 
-	    
+	   
 	    
 	    for (int i = 0; i < resultCount; i++) {
 			JSONObject resultObject =  jsonArray.getJSONObject(i);
@@ -199,7 +202,7 @@ public class HomeController {
 		ratingTitleComponent.setSize("sm");
 		ratingTitleComponent.setFlex(1);
 		ratingTitleComponent.setColor("#aaaaaa");
-		
+		 
 		TextComponent ratingCountComponent = new TextComponent();
 		ratingCountComponent.setText(rating + "顆星");
 		ratingCountComponent.setSize("sm");
@@ -213,106 +216,6 @@ public class HomeController {
 		ratingBox.setContents(ratingContents);
 		bodyContents.add(ratingBox);
 		return bubbleContent;
-
-		/*
-
-  "body": {
-    "type": "box",
-    "layout": "vertical",
-    "contents": [
-      {
-        "type": "text",
-        "text": "Brown Cafe",
-        "weight": "bold",
-        "size": "xl"
-      },
-      {
-        "type": "box",
-        "layout": "vertical",
-        "margin": "lg",
-        "spacing": "sm",
-        "contents": [
-          {
-            "type": "box",
-            "layout": "baseline",
-            "spacing": "sm",
-            "contents": [
-              {
-                "type": "text",
-                "text": "Place",
-                "color": "#aaaaaa",
-                "size": "sm",
-                "flex": 1
-              },
-              {
-                "type": "text",
-                "text": "Miraina Tower, 4-1-6 Shinjuku, Tokyo",
-                "wrap": true,
-                "color": "#666666",
-                "size": "sm",
-                "flex": 5
-              }
-            ]
-          },
-          {
-            "type": "box",
-            "layout": "baseline",
-            "spacing": "sm",
-            "contents": [
-              {
-                "type": "text",
-                "text": "Time",
-                "color": "#aaaaaa",
-                "size": "sm",
-                "flex": 1
-              },
-              {
-                "type": "text",
-                "text": "10:00 - 23:00",
-                "wrap": true,
-                "color": "#666666",
-                "size": "sm",
-                "flex": 5
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  "footer": {
-    "type": "box",
-    "layout": "vertical",
-    "spacing": "sm",
-    "contents": [
-      {
-        "type": "button",
-        "style": "link",
-        "height": "sm",
-        "action": {
-          "type": "uri",
-          "label": "CALL",
-          "uri": "https://linecorp.com"
-        }
-      },
-      {
-        "type": "button",
-        "style": "link",
-        "height": "sm",
-        "action": {
-          "type": "uri",
-          "label": "WEBSITE",
-          "uri": "https://linecorp.com"
-        }
-      },
-      {
-        "type": "spacer",
-        "size": "sm"
-      }
-    ],
-    "flex": 0
-  }
-}*/
 	}
 	
 	private String getMapPhotoByPhotoReferance(String photoreference) {

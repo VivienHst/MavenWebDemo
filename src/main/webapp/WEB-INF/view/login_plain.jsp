@@ -8,22 +8,24 @@
 <head>
 <meta charset="UTF-8">
 <title>Login page</title>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/static/css/style.css">
+
 </head>
-<body>
-	<h1>login_plain.jsp</h1>
+<body class="login">
+	<h1>登入</h1>
 
 	<form:form action="${pageContext.request.contextPath}/authenticateTheUser"
 				method="POST" >
 							
  		<c:if test="${param.error!=null}">
- 			<h3>Sorry something wrong</h3>		
+ 			<h3 class="error-msg">帳號或密碼錯誤，請重新輸入</h3>		
 		</c:if>
 		<c:if test="${param.logout!=null}">
  			<h3>You have been logged out.</h3>		
 		</c:if>
 		
 		 <p>		
-        	 Account  : <input type="text" name="username" placeholder="Usernmae"/>
+        	 Account  : <input type="text" name="username" placeholder="Account"/>
 	     </p>		
     	 <p>		
     		 Password : <input type="password" name="password" placeholder="Password"/>

@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name="Member")
@@ -19,15 +20,19 @@ public class MemberVO {
 	private Integer uid;
 	
 	@Column(name="Account")
+	@NotEmpty(message = "請填入帳號")
 	private String account;
 	
 	@Column(name="Password")
+	@NotEmpty(message = "請填入密碼")
 	private String password;
 	
 	@Column(name="FirstName")
+	@NotEmpty(message = "請填入名字")
 	private String firstName;
 	
 	@Column(name="LastName")
+	@NotEmpty(message = "請填入姓")
 	private String lastName;
 	
 	@Column(name="Email")

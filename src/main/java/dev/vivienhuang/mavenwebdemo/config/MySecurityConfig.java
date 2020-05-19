@@ -22,10 +22,10 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//		auth.jdbcAuthentication()
-//        .dataSource(securityDataSource)
-//        .usersByUsernameQuery("select Account,Password, State from Member where Account=?")
-//        .authoritiesByUsernameQuery("select Account, Permission from MemberPermission where Account=?");
+		auth.jdbcAuthentication()
+        .dataSource(securityDataSource)
+        .usersByUsernameQuery("select Account,Password, State from Member where Account=?")
+        .authoritiesByUsernameQuery("select Account, Permission from MemberPermission where Account=?");
 	}
 
 	@Override
@@ -47,9 +47,9 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter{
 		// 使用的ROLE DB裡面一定要存成ROLE_ROLENAME
 		http.csrf().disable()
 			.authorizeRequests()
-			.antMatchers("/guest", "/test", "/api", "/home", "/uploadImageFile", "/keyword").permitAll()
-			.antMatchers("/createMember").hasRole("EMPLOYEE")
-			.antMatchers("/manager/**").hasRole("MANAGER")
+			.antMatchers("/guest", "/test", "/api", "/home", "/uploadImageFile").permitAll()
+			.antMatchers("/keyword/**").hasRole("EMPLOYEE")
+			.antMatchers("/manager/**", "/member/**").hasRole("MANAGER")
 			.antMatchers("/admin/**").hasRole("ADMIN")
 			.and()
 			.formLogin()
