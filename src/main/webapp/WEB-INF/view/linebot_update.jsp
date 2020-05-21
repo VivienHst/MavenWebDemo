@@ -87,9 +87,7 @@
 					</tbody>
 				</table>
 				<form:input type="hidden" path="lineBotVO.botId" value="${linebot.lineBotVO.botId}"/>
-				<form:input type="hidden" path="lineBotVO.createDate" value="${linebot.lineBotVO.createDate}"/>
-				<form:input type="hidden" path="lineBotVO.destination" value="${linebot.lineBotVO.destination}"/>
-				
+				<form:input type="hidden" path="lineBotVO.createDate" value="${linebot.lineBotVO.createDate}"/>				
 				<input type="submit" value="更新">
 				
 			</form:form>

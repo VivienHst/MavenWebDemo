@@ -50,7 +50,7 @@ public class WeatherSkill implements IWeatherSkill {
 	
 	@Override
 	public String getObserveRadarDataImage() {
-	    String cwbUrl = "https://www.cwb.gov.tw/V7/js/HDRadar_1000_n_val.js";
+	    String cwbUrl = "https://www.cwb.gov.tw/Data/js/obs_img/Observe_radar.js";
 	    RestTemplate restTemplate = new RestTemplate();	 
 	    ResponseEntity<String> result = restTemplate.getForEntity(cwbUrl, String.class);
 	    
@@ -58,11 +58,16 @@ public class WeatherSkill implements IWeatherSkill {
 	    
 	    if(result.getStatusCodeValue() == 200) {
 	    	radarData =  result.getBody();
-		    int startIndex = radarData.indexOf("\",\"") + 3;
-		    int endIndex = radarData.indexOf("\"),");
-		    
-		    String radarDataImageUrl = "https://www.cwb.gov.tw" + radarData.substring(startIndex, endIndex);
-		    return radarDataImageUrl;
+	    	String[] imageRaw = radarData.split("img\":'");
+	    	String imageUrl = imageRaw[1].substring(0, imageRaw[1].indexOf("',"));
+//		    int startIndex = radarData.indexOf("\"img\"") + 3;
+//		    int endIndex = radarData.indexOf("\"),");
+//		    
+//		    String radarDataImageUrl = "https://www.cwb.gov.tw" + radarData.substring(startIndex, endIndex);
+		   //https://www.cwb.gov.tw/Data/radar/CV1_3600_202005211750.png
+		    String radarDataImageUrl = "https://www.cwb.gov.tw/Data/radar/" + imageUrl;
+		    System.out.println("radarDataImageUrl : " + radarDataImageUrl);
+	    	return radarDataImageUrl;
 	    }
 	    return "";
 

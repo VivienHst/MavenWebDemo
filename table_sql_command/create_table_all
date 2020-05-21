@@ -97,7 +97,7 @@ create table ChatKeyWord(
 create table ChatKeyWordGetLog(
     AutoId int not null IDENTITY(1,1),
     CId int not null,
-    LineId int not null,
+    LineId varchar(50) not null,
     LogDate datetime not null,
     CONSTRAINT CHAT_KEY_WORD_GET_AUTO_ID_PK PRIMARY KEY (AutoId)
 )

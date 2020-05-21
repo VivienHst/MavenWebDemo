@@ -118,10 +118,14 @@ public class LineBotController {
 		
 		Set<SkillVO> skillVOs = new HashSet<SkillVO>();
 		
-		for (Integer skillId : model.getBotSkills()) {
-			System.out.println("getSkillId:" + skillId);
-			skillVOs.add(skillService.getSkill(skillId));			
+		if(model.getBotSkills() != null) {
+			for (Integer skillId : model.getBotSkills()) {
+				System.out.println("getSkillId:" + skillId);
+				skillVOs.add(skillService.getSkill(skillId));			
+			}
 		}
+		
+		
 //		
 		LineBotVO lineBotVO = model.getLineBotVO();
 		lineBotVO.setSkills(skillVOs);

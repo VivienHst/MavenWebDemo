@@ -220,3 +220,36 @@ BEGIN
 END
 
 GO
+
+=========================================================================================
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		vivien
+-- Create date: 20200122
+-- Description:	<Description,,>
+-- exec LineMemberGet '@lineId', '@lineName', '@lineId', '@botId'
+-- =============================================
+CREATE PROCEDURE [dbo].[LineMemberGetByBotId]
+	@botId int
+	
+	
+
+AS
+BEGIN
+	SET NOCOUNT ON;	
+    
+    SELECT TOP (1) [LineId]
+	      ,[LineName]
+	      ,[LinePicture]
+	      ,[BotId]
+	      ,[MemberStatus]
+	      ,[CreateDate]
+	      ,[UpdateDate]
+	  FROM [dbo].[LineMember] where BotId = @botId
+END
+
+GO
