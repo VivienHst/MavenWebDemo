@@ -24,10 +24,10 @@
 		</span>
 	
 		<ul class="navbar-nav">
-			<li><a href="${pageContext.request.contextPath}/home">Home</a></li>
-			<li><a href="${pageContext.request.contextPath}/keyword">Keyword</a></li>
-			<li><a href="${pageContext.request.contextPath}/linebot">Bot</a></li>	
-			<li><a href="${pageContext.request.contextPath}/skill">Skill</a></li>												
+			<li><a href="${pageContext.request.contextPath}/home">首頁</a></li>
+			<li><a href="${pageContext.request.contextPath}/keyword">關鍵字</a></li>
+			<li><a href="${pageContext.request.contextPath}/linebot">機器人</a></li>	
+			<li><a href="${pageContext.request.contextPath}/skill">機器人技能</a></li>												
 			<li><a href="${pageContext.request.contextPath}/member">Member</a></li>
 			<%-- <li><a href="${pageContext.request.contextPath}/message">Message</a></li> --%>
 			
@@ -45,10 +45,10 @@
 	</nav>
 	<div id="side-menu" class="side-nav">
 		<a href="#" class="btn-close" onclick="closeSideMenu()">&times;</a>
-		<a href="${pageContext.request.contextPath}/home">Home</a>
-		<a href="${pageContext.request.contextPath}/keyword">Keyword</a>
-		<a href="${pageContext.request.contextPath}/linebot">Bot</a>
-		<a href="${pageContext.request.contextPath}/skill">Skill</a>
+		<a href="${pageContext.request.contextPath}/home">首頁</a>
+		<a href="${pageContext.request.contextPath}/keyword">關鍵字</a>
+		<a href="${pageContext.request.contextPath}/linebot">機器人</a>
+		<a href="${pageContext.request.contextPath}/skill">機器人技能</a>
 		<a href="${pageContext.request.contextPath}/member">Member</a>
 		<%-- <a href="${pageContext.request.contextPath}/message">Message</a> --%>		
 		<!-- <a href="#">Services</a> -->

@@ -60,11 +60,6 @@ public class WeatherSkill implements IWeatherSkill {
 	    	radarData =  result.getBody();
 	    	String[] imageRaw = radarData.split("img\":'");
 	    	String imageUrl = imageRaw[1].substring(0, imageRaw[1].indexOf("',"));
-//		    int startIndex = radarData.indexOf("\"img\"") + 3;
-//		    int endIndex = radarData.indexOf("\"),");
-//		    
-//		    String radarDataImageUrl = "https://www.cwb.gov.tw" + radarData.substring(startIndex, endIndex);
-		   //https://www.cwb.gov.tw/Data/radar/CV1_3600_202005211750.png
 		    String radarDataImageUrl = "https://www.cwb.gov.tw/Data/radar/" + imageUrl;
 		    System.out.println("radarDataImageUrl : " + radarDataImageUrl);
 	    	return radarDataImageUrl;

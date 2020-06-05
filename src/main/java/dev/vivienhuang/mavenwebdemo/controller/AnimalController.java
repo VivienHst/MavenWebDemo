@@ -7,7 +7,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,15 +24,6 @@ public class AnimalController {
 	
 	@GetMapping("/all")
 	public String getAllAnimalPage(@RequestParam(value = "page",required=false)Integer page, Model model) {
-		
-//		GetURLAnimalContent getURLAnimalContent = new GetURLAnimalContent();
-//
-//		List<AnimalVO> addAnimalVOS = getURLAnimalContent.GetUrlContent("https://www.steamxo.com/2020/04/03/977764");
-////		animalService.insert(animalVOS.get(0));
-//
-//		for (AnimalVO animalVO : addAnimalVOS) {
-//			animalService.createAnimal(animalVO);
-//		}
 		
 		if(page == null) {
 			page = 0;
@@ -64,11 +54,6 @@ public class AnimalController {
  		return "animal";
 	}
 	
-	@GetMapping("/update")
-	public String geUpdatePage(Model model) {
-		return "updateAnimal";
-	}
-	
 	@GetMapping("/add")
 	public String getAddPage(Model model) {
 		model.addAttribute("animalVO", new AnimalVO());
@@ -76,7 +61,7 @@ public class AnimalController {
 	}
 	
 	@PostMapping("/addAnimal")
-	public String addAnimal(@Valid AnimalVO animalVO,BindingResult bindingResult, ModelMap modelMap) {
+	public String addAnimal(@Valid AnimalVO animalVO,BindingResult bindingResult, Model model) {
 		
 		if(bindingResult.hasErrors()) {
 			return "addAniaml";
@@ -84,6 +69,27 @@ public class AnimalController {
 		
 		animalService.createAnimal(animalVO);
 		
+		return "redirect:/animal/all";
+	}
+	
+	@GetMapping("/delete")
+	public String deleteAnimal(@RequestParam("aid") int aid) {
+		animalService.deleteAnimal(aid);
+		return "redirect:/animal/all";	
+	}
+	
+	@GetMapping("/update")
+	public String getUpdateAnimalPage(@RequestParam("aid") int aid, Model model) {
+		model.addAttribute("animalVO", animalService.getAnimal(aid));
+		return "updateAnimal";
+	}
+	
+	@PostMapping("/updateAnimal")
+	public String updateAnimal(@Valid AnimalVO animalVO,BindingResult bindingResult, Model model) {
+		if(bindingResult.hasErrors()) {
+			return "updateAnimal";
+		}
+		animalService.updateAnimal(animalVO);
 		return "redirect:/animal/all";
 	}
 }

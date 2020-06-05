@@ -22,13 +22,20 @@
 				<th>Name</th>
 				<th>Species</th>
 				<th>Personality</th>
+				<th>Operator</th>
+
 			</tr>
 		
-			<c:forEach var="animal" items="${animalVOs}" begin="1" end="10">
+			<c:forEach var="animal" items="${animalVOs}" begin="0" end="9">
 				<tr>
 					<td>${animal.name}</td>
 					<td>${animal.species}</td>
 					<td>${animal.personality}</td>
+					<td>
+						<a href="${pageContext.request.contextPath}/animal/delete?aid=${animal.aid}">刪除</a>
+						<a href="${pageContext.request.contextPath}/animal/update?aid=${animal.aid}">更新</a>
+					</td>
+					
 				</tr>
 			</c:forEach>
 			

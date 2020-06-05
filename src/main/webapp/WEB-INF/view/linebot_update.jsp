@@ -73,12 +73,12 @@
 							
 								<c:forEach items="${linebot.lineBotVO.skills}" var="skill"  >	
 				                	<form:checkbox  path="botSkills" value="${skill.skillId}" 
-				                		label="${skill.skillName}" checked="checked"/>	</br>			                	
+				                		label="${skill.skillName}" checked="checked"/>	<br>			                	
 						        </c:forEach>
 							
 							   <c:forEach items="${linebot.unUsedSkills}" var="skill"  >
 				                	<form:checkbox  path="botSkills" value="${skill.skillId}" 
-				                		label="${skill.skillName}" />	</br>		                	
+				                		label="${skill.skillName}" />	<br>		                	
 						        </c:forEach>
     						</td>
 					        
