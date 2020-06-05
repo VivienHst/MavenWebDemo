@@ -15,7 +15,7 @@
 	<jsp:include page="navbar_and_side_menu.jsp"></jsp:include><!-- 第二種 -->
 
 	<div id="main">
-		<h1>linebot_update.jsp</h1>
+		<h1>更新資料</h1>
 	
 		<div id="container">
 			<form:form action="linebotUpdate" modelAttribute="linebot" method="post">

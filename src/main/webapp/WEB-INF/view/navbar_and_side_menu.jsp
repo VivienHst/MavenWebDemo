@@ -27,7 +27,7 @@
 			<li><a href="${pageContext.request.contextPath}/home">首頁</a></li>
 			<li><a href="${pageContext.request.contextPath}/keyword">關鍵字</a></li>
 			<li><a href="${pageContext.request.contextPath}/linebot">機器人</a></li>	
-			<li><a href="${pageContext.request.contextPath}/skill">機器人技能</a></li>												
+			<li><a href="${pageContext.request.contextPath}/skill">技能</a></li>												
 			<li><a href="${pageContext.request.contextPath}/member">Member</a></li>
 			<%-- <li><a href="${pageContext.request.contextPath}/message">Message</a></li> --%>
 			
@@ -48,7 +48,7 @@
 		<a href="${pageContext.request.contextPath}/home">首頁</a>
 		<a href="${pageContext.request.contextPath}/keyword">關鍵字</a>
 		<a href="${pageContext.request.contextPath}/linebot">機器人</a>
-		<a href="${pageContext.request.contextPath}/skill">機器人技能</a>
+		<a href="${pageContext.request.contextPath}/skill">技能</a>
 		<a href="${pageContext.request.contextPath}/member">Member</a>
 		<%-- <a href="${pageContext.request.contextPath}/message">Message</a> --%>		
 		<!-- <a href="#">Services</a> -->

@@ -16,7 +16,7 @@
 	
 		<div id="main">
 	
-			<h1>keyword_update.jsp</h1>
+			<h1>關鍵字更新</h1>
 			
 			<div id="container">
 				<form:form action="keywordUpdate" modelAttribute="keyword" method="post">

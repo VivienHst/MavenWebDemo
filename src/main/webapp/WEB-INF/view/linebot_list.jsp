@@ -9,7 +9,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
-		<title>Home</title>
+		<title>Linebot</title>
 		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/static/css/style.css">
 		
 		
@@ -53,7 +53,7 @@
 						
 						<%-- <td>${lineBotItem.token}</td> --%>
 						<%-- <td>${lineBotItem.secret}</td> --%>			
-						<td>${lineBotItem.type}</td>
+						<%-- <td>${lineBotItem.type}</td> --%>
 						<td>
 							<fmt:formatDate value="${lineBotItem.createDate}" pattern="yyyy-MM-dd HH:mm" />
 						</td>
